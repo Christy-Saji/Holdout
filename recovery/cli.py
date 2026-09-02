@@ -8,8 +8,25 @@ from __future__ import annotations
 
 import argparse
 
+from recovery import cohort as cohort_mod
+
+
+def _build_cohort(seed: int, n: int, out: str | None = None) -> int:
+    path = cohort_mod.build_cohort_artifact(seed=seed, n=n, out=out)
+    latents = cohort_mod.latents_path_for(path)
+    print(f"cohort: {n} cases (seed={seed}) -> {path}")
+    print(f"latents side table (simulator only) -> {latents}")
+    return 0
+
+
+def _cmd_cohort(args: argparse.Namespace) -> int:
+    return _build_cohort(args.seed, args.n, args.out)
+
 
 def _cmd_eval(args: argparse.Namespace) -> int:
+    # The cohort is regenerated as a side effect so that `eval` is self-contained:
+    # a reviewer with a clean clone runs one command and gets byte-identical input.
+    _build_cohort(args.seed, args.n)
     print(
         "[stub] eval: would run arms="
         f"{args.arms} on n={args.n} cases with seed={args.seed} "
@@ -48,6 +65,12 @@ def build_parser() -> argparse.ArgumentParser:
     p_eval.add_argument("--record", action="store_true")
     p_eval.add_argument("--live", action="store_true")
     p_eval.set_defaults(func=_cmd_eval)
+
+    p_cohort = sub.add_parser("cohort", help="regenerate the synthetic cohort artifact")
+    p_cohort.add_argument("--seed", type=int, default=42)
+    p_cohort.add_argument("--n", type=int, default=500)
+    p_cohort.add_argument("--out", default=None, help="output path (default data/cohort_seed<seed>.jsonl)")
+    p_cohort.set_defaults(func=_cmd_cohort)
 
     p_report = sub.add_parser("report", help="summarise a completed run")
     p_report.add_argument("--run-id", default=None)
