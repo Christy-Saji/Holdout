@@ -206,3 +206,36 @@ def test_method_mix_is_upi_heavy():
     cases = generate_cohort(seed=42, n=500)
     upi = sum(1 for c in cases if c.method is Method.UPI)
     assert upi / len(cases) > 0.4
+
+
+def test_eval_never_shrinks_a_committed_cohort_artifact(tmp_path, monkeypatch, capsys):
+    """A development run at --n 20 must not replace the published 500-case artifact.
+
+    The cohort is a pure function of (seed, n), so a smaller run is perfectly valid --
+    the danger is entirely to the file on disk. Overwriting it would leave the
+    reproduction gate passing against a cohort that is not the one the README reports.
+    """
+    from recovery.cli import _cohort_for_eval
+
+    monkeypatch.chdir(tmp_path)
+    published = write_cohort(generate_cohort(seed=42, n=500), tmp_path / "data" / "cohort_seed42.jsonl")
+    before = published.read_bytes()
+
+    cases = _cohort_for_eval(seed=42, n=20)
+
+    assert len(cases) == 20, "the run itself still uses the size that was asked for"
+    assert published.read_bytes() == before, "the committed artifact must be untouched"
+    assert "left" in capsys.readouterr().out, "and the run must say so, not do it silently"
+
+
+def test_eval_writes_the_cohort_artifact_when_there_is_none(tmp_path, monkeypatch):
+    """A clean clone still gets a self-contained eval."""
+    from recovery.cli import _cohort_for_eval
+
+    monkeypatch.chdir(tmp_path)
+    cases = _cohort_for_eval(seed=42, n=25)
+
+    written = tmp_path / "data" / "cohort_seed42.jsonl"
+    assert written.exists()
+    assert len(written.read_text(encoding="utf-8").strip().splitlines()) == 25
+    assert len(cases) == 25

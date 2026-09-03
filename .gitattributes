@@ -1,0 +1,11 @@
+# Committed reproduction artifacts are generated with LF (every writer in this repo
+# passes newline="\n") and are byte-compared by the phase 8 reproduction gate.
+#
+# This machine has core.autocrlf=true, so without these rules a fresh clone would
+# check the artifacts out with CRLF, `repro` would regenerate them with LF, and the
+# gate would report a reproduction failure that is purely a line-ending artefact --
+# on the one command whose entire job is to prove the numbers reproduce.
+
+*.jsonl              text eol=lf
+data/cassettes/*.json text eol=lf
+data/results/**/*.json text eol=lf
