@@ -255,3 +255,119 @@ def test_compute_refuses_a_run_with_no_holdout(tmp_path):
     )
     with pytest.raises(ValueError, match="control"):
         metrics.compute(empty)
+
+
+# -- time-to-cash (phase 6) -----------------------------------------------------------
+
+
+def test_time_to_cash_averages_only_the_cases_that_recovered():
+    """The bias trap: a non-recovery scored as day zero drags the mean down.
+
+    Two recoveries at 24h and 72h average two days. Counting the third, unrecovered
+    case as a zero would report 1.33 days and would make the arm that recovers *less*
+    look faster -- a large silent bias, and the pitfall phase 6 names by name.
+    """
+    outcomes = [
+        outcome("a", 10_000, True, recovered_at_hour=24),
+        outcome("b", 10_000, True, recovered_at_hour=72),
+        outcome("c", 10_000, False),
+    ]
+    assert metrics.time_to_cash_days(outcomes) == pytest.approx(2.0)
+
+
+def test_time_to_cash_is_none_not_zero_when_nothing_recovered():
+    outcomes = [outcome("a", 10_000, False), outcome("b", 10_000, False)]
+    assert metrics.time_to_cash_days(outcomes) is None
+
+
+def test_time_to_cash_is_none_for_an_empty_arm():
+    assert metrics.time_to_cash_days([]) is None
+
+
+# -- contact fatigue (phase 6) --------------------------------------------------------
+
+
+def test_contact_fatigue_p95_matches_the_hand_computed_value():
+    """Twenty customers contacted 1..20 times. Nearest-rank P95 is the 19th value."""
+    outcomes = [
+        outcome(f"case-{i}", 10_000, False, contacts=i, customer_id=f"cust-{i}")
+        for i in range(1, 21)
+    ]
+    fatigue = metrics.contact_fatigue(outcomes)
+
+    assert fatigue.n_customers == 20
+    assert fatigue.mean == pytest.approx(10.5)
+    assert fatigue.p95 == 19
+
+
+def test_contact_fatigue_aggregates_per_customer_not_per_case():
+    """One customer with two failed cases feels the sum of both, not the average."""
+    outcomes = [
+        outcome("case-1", 10_000, False, contacts=3, customer_id="cust-shared"),
+        outcome("case-2", 10_000, False, contacts=4, customer_id="cust-shared"),
+    ]
+    fatigue = metrics.contact_fatigue(outcomes)
+
+    assert fatigue.n_customers == 1
+    assert fatigue.mean == pytest.approx(7.0)
+    assert fatigue.p95 == 7
+
+
+def test_contact_fatigue_on_an_empty_arm_is_zero_not_an_error():
+    fatigue = metrics.contact_fatigue([])
+    assert (fatigue.mean, fatigue.p95, fatigue.n_customers) == (0.0, 0, 0)
+
+
+def test_bootstrap_replicate_count_matches_the_published_spec():
+    """B = 2000 is specified in the build plan §7 and quoted in the README."""
+    assert metrics.BOOTSTRAP_REPLICATES == 2000
+
+
+# -- the pairing test (phase 6 exit criterion) ----------------------------------------
+
+
+def _unpaired_interval(arm, control, *, seed: int = 42, replicates: int = 2000):
+    """A deliberately wrong bootstrap: each arm resampled independently.
+
+    This is the version written from memory. It runs without error and silently throws
+    away the pairing that common random numbers bought, so it exists here only as the
+    thing the paired estimator has to beat.
+    """
+    import random
+
+    rng = random.Random(seed)
+    arm_paise = [o.recovered_paise for o in arm]
+    control_paise = [o.recovered_paise for o in control]
+    n = len(arm_paise)
+
+    deltas = sorted(
+        sum(rng.choices(arm_paise, k=n)) - sum(rng.choices(control_paise, k=n))
+        for _ in range(replicates)
+    )
+    lo = deltas[int(round(0.025 * (replicates - 1)))]
+    hi = deltas[int(round(0.975 * (replicates - 1)))]
+    return lo, hi
+
+
+def test_paired_bootstrap_is_strictly_narrower_than_the_unpaired_one():
+    """The test that proves the CRN design is actually paying off.
+
+    The arms share a cohort and hugely variable amounts, so the *gross* total of either
+    arm is noisy while their *difference* is not: the arm recovers everything the
+    control does, plus one case in five. A paired resample sees only that difference. An
+    unpaired one sees both totals' noise and reports an interval several times too wide.
+
+    If these two intervals ever come out the same width, the pairing is not being used
+    and every published interval in this project is wrong.
+    """
+    control, arm = [], []
+    for i in range(200):
+        amount = 10_000 + (i % 37) * 250_000  # wide spread: the noise the pairing kills
+        control.append(outcome(f"case-{i}", amount, i % 5 == 0, recovered_at_hour=48))
+        arm.append(outcome(f"case-{i}", amount, i % 5 in (0, 1), recovered_at_hour=48))
+
+    paired = metrics.bootstrap_incremental(arm, control, seed=42)
+    lo, hi = _unpaired_interval(arm, control, seed=42)
+
+    assert (hi - lo) > 0
+    assert (paired.hi - paired.lo) < (hi - lo)

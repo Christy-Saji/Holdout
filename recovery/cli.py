@@ -147,8 +147,19 @@ def _cmd_sweep(args: argparse.Namespace) -> int:
 
 
 def _cmd_repro(args: argparse.Namespace) -> int:
-    print("[stub] repro: would run the clean-clone reproduction gate. Implemented in phase 8.")
-    return 0
+    from recovery.eval import repro
+
+    if args.in_process:
+        return repro.main(
+            run_id=args.run_id,
+            results_root=Path(args.results_root),
+            cohort_path=args.cohort,
+        )
+    return repro.clean_clone(
+        run_id=args.run_id,
+        results_root=Path(args.results_root),
+        worktree=args.worktree,
+    )
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -193,6 +204,23 @@ def build_parser() -> argparse.ArgumentParser:
     p_sweep.set_defaults(func=_cmd_sweep)
 
     p_repro = sub.add_parser("repro", help="clean-clone reproduction gate")
+    p_repro.add_argument("--run-id", default=None)
+    p_repro.add_argument("--results-root", default="data/results")
+    p_repro.add_argument(
+        "--cohort", default=None, help="cohort artifact (default data/cohort_seed<seed>.jsonl)"
+    )
+    p_repro.add_argument(
+        "--in-process",
+        action="store_true",
+        help="fast path: re-derive in this interpreter instead of cloning. Cannot catch "
+        "a dependency missing from pyproject.toml, because this venv already has it.",
+    )
+    p_repro.add_argument(
+        "--worktree",
+        action="store_true",
+        help="materialise the working tree instead of git HEAD, for checking a "
+        "reproduction before the work that produces it has been committed.",
+    )
     p_repro.set_defaults(func=_cmd_repro)
 
     return parser

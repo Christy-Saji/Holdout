@@ -21,3 +21,8 @@ dev = [
 
 [tool.setuptools.packages.find]
 include = ["recovery*"]
+
+[tool.pytest.ini_options]
+markers = [
+    "live: hits the Razorpay test-mode API. Skipped automatically without credentials, so `pytest` stays green for a reviewer who has no keys.",
+]

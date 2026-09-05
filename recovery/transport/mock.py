@@ -297,6 +297,34 @@ class MockTransport:
         sim.recovery_cause = cause
         sim.scheduled.clear()
 
+    def mark_recovered(
+        self,
+        case_id: str,
+        at_hour: int,
+        payment_id: str | None = None,
+        cause: str = CAUSE_CONTACT,
+    ) -> bool:
+        """Record a payment confirmed from outside the simulation. Returns whether it changed anything.
+
+        The inbound counterpart of the outbound actions: a customer paid, and the system
+        found out about it rather than causing it. ``RazorpayTestTransport`` offers the
+        same method with the same contract so that
+        :class:`~recovery.transport.webhooks.WebhookReceiver` -- and the duplicate-delivery
+        guarantee that lives in it -- can be exercised offline against the simulator.
+
+        The return value is the whole point. At-least-once webhook delivery means the
+        same payment arrives twice; idempotence has to live in **one** place or each
+        caller re-derives it and one of them gets it wrong. This is that place: the
+        second call returns ``False`` and touches nothing.
+
+        Nothing in :mod:`recovery.eval` calls this, so it cannot move a published number.
+        """
+        sim = self._sim(case_id)
+        if sim.has_recovered:
+            return False
+        self._recover(sim, at_hour, cause)
+        return True
+
     # -- actions ---------------------------------------------------------------------
 
     def attempt_retry(self, case_id: str, at_hour: int, idempotency_key: str) -> Result:

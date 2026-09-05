@@ -1,0 +1,139 @@
+{
+  "arms": [
+    "control",
+    "baseline"
+  ],
+  "n": 500,
+  "param": "p_self_heal",
+  "points": [
+    {
+      "ci": {
+        "excludes_zero": true,
+        "hi": 11681000,
+        "level": 0.95,
+        "lo": 7084000,
+        "point": 9327500,
+        "replicates": 2000
+      },
+      "cost_per_incremental_rupee": 0.021002412221924418,
+      "incremental_paise": 9327500,
+      "multiplier": 0.5,
+      "value": 0.5
+    },
+    {
+      "ci": {
+        "excludes_zero": true,
+        "hi": 11217200,
+        "level": 0.95,
+        "lo": 6617400,
+        "point": 8828800,
+        "replicates": 2000
+      },
+      "cost_per_incremental_rupee": 0.022086806814063067,
+      "incremental_paise": 8828800,
+      "multiplier": 0.625,
+      "value": 0.625
+    },
+    {
+      "ci": {
+        "excludes_zero": true,
+        "hi": 10963300,
+        "level": 0.95,
+        "lo": 6474400,
+        "point": 8639000,
+        "replicates": 2000
+      },
+      "cost_per_incremental_rupee": 0.0224678782266466,
+      "incremental_paise": 8639000,
+      "multiplier": 0.75,
+      "value": 0.75
+    },
+    {
+      "ci": {
+        "excludes_zero": true,
+        "hi": 10637800,
+        "level": 0.95,
+        "lo": 6208500,
+        "point": 8353200,
+        "replicates": 2000
+      },
+      "cost_per_incremental_rupee": 0.023057032035627065,
+      "incremental_paise": 8353200,
+      "multiplier": 0.875,
+      "value": 0.875
+    },
+    {
+      "ci": {
+        "excludes_zero": true,
+        "hi": 10554600,
+        "level": 0.95,
+        "lo": 6171900,
+        "point": 8293100,
+        "replicates": 2000
+      },
+      "cost_per_incremental_rupee": 0.023224126080717705,
+      "incremental_paise": 8293100,
+      "multiplier": 1.0,
+      "value": 1.0
+    },
+    {
+      "ci": {
+        "excludes_zero": true,
+        "hi": 10391600,
+        "level": 0.95,
+        "lo": 6036900,
+        "point": 8115400,
+        "replicates": 2000
+      },
+      "cost_per_incremental_rupee": 0.023621756167286886,
+      "incremental_paise": 8115400,
+      "multiplier": 1.125,
+      "value": 1.125
+    },
+    {
+      "ci": {
+        "excludes_zero": true,
+        "hi": 10098400,
+        "level": 0.95,
+        "lo": 5769000,
+        "point": 7845400,
+        "replicates": 2000
+      },
+      "cost_per_incremental_rupee": 0.02431998368470696,
+      "incremental_paise": 7845400,
+      "multiplier": 1.25,
+      "value": 1.25
+    },
+    {
+      "ci": {
+        "excludes_zero": true,
+        "hi": 9053300,
+        "level": 0.95,
+        "lo": 5113100,
+        "point": 6914700,
+        "replicates": 2000
+      },
+      "cost_per_incremental_rupee": 0.02750661633910365,
+      "incremental_paise": 6914700,
+      "multiplier": 1.375,
+      "value": 1.375
+    },
+    {
+      "ci": {
+        "excludes_zero": true,
+        "hi": 8198800,
+        "level": 0.95,
+        "lo": 4530500,
+        "point": 6195700,
+        "replicates": 2000
+      },
+      "cost_per_incremental_rupee": 0.03050502768048808,
+      "incremental_paise": 6195700,
+      "multiplier": 1.5,
+      "value": 1.5
+    }
+  ],
+  "seed": 42,
+  "sign_survives": true,
+  "target": "p_self_heal_scale"
+}
