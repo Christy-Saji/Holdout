@@ -1,11 +1,18 @@
-# Recovery — measured incremental revenue recovery
+# Holdout
 
-**Razorpay AI Buildathon, Track 03 — AI Revenue Recovery.**
+**A payment recovery system that measures itself against doing nothing.**
+
+Razorpay AI Buildathon, Track 03 — AI Revenue Recovery.
 
 A dunning system for failed recurring payments, and — more to the point — the
 measurement apparatus that says how much money it actually recovered. Every number
-below is reported as **incremental** recovery against a do-nothing holdout control
-arm, because gross recovery counts every payment that would have succeeded anyway.
+below is reported as **incremental** recovery against a do-nothing holdout arm,
+because gross recovery counts every payment that would have succeeded anyway.
+
+**The name is the argument.** Roughly a fifth of failed payments recover on their own,
+so a system reporting gross recovery claims credit for money that was already arriving.
+The holdout is the only way to know the difference — and it is the thing nobody runs in
+production, because withholding recovery from real payments costs real money.
 
 ---
 

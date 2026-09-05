@@ -1,4 +1,4 @@
-# Architecture
+# Architecture — Holdout
 
 Seven layers, and the three places this system deliberately does **not** do the
 obvious thing. The departures are the part worth reading; the reasoning for each is
