@@ -1,6 +1,6 @@
 """The generated readout must not be able to drift from the numbers it reports.
 
-``docs/index.html`` is generated, never hand-edited, and it is the artifact a reviewer
+``index.html`` is generated, never hand-edited, and it is the artifact a reviewer
 is most likely to look at first. Two ways it can go quietly wrong, both caught here:
 
 * the template's script reads an element id the markup no longer has, so a section
@@ -23,7 +23,7 @@ import pytest
 
 ROOT = Path(__file__).resolve().parent.parent
 TEMPLATE = ROOT / "scripts" / "viewer.template.html"
-GENERATED = ROOT / "docs" / "index.html"
+GENERATED = ROOT / "index.html"
 RUN_DIR = ROOT / "data" / "results" / "run-s42-n500"
 
 PLACEHOLDER = "__DATA__"
@@ -107,14 +107,14 @@ def test_the_generated_page_is_byte_stable(builder, tmp_path, monkeypatch):
 
 
 def test_the_committed_page_matches_the_current_template(builder, tmp_path, monkeypatch):
-    """``docs/index.html`` is generated; a hand-edit or a stale build fails here."""
+    """``index.html`` is generated; a hand-edit or a stale build fails here."""
     if not GENERATED.exists():
         pytest.skip("no generated viewer committed")
     out = tmp_path / "index.html"
     monkeypatch.setattr(builder, "OUT", out)
     assert builder.main() == 0
     assert out.read_bytes() == GENERATED.read_bytes(), (
-        "docs/index.html is stale or hand-edited; regenerate with "
+        "index.html is stale or hand-edited; regenerate with "
         "`python scripts/build_viewer.py`"
     )
 

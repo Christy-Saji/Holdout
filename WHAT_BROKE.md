@@ -363,7 +363,7 @@ methods section again without a test failing.
 
 **Phase 8. A presentation defect, and the only one here a judge would have seen first.**
 
-`docs/index.html` is described in the README as "a single self-contained page with its
+`index.html` is described in the README as "a single self-contained page with its
 data inlined, no server and no network". It pulled Archivo and IBM Plex Mono from
 `fonts.googleapis.com` at render time — three network requests on every open.
 

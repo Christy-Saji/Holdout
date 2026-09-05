@@ -34,7 +34,7 @@ result even on the cases both arms would have recovered anyway.
 
 ![Bootstrap interval on incremental recovery](data/results/run-s42-n500/incremental-interval.png)
 
-> **An interactive readout of everything below is in [`docs/index.html`](docs/index.html)** —
+> **An interactive readout of everything below is in [`index.html`](index.html)** —
 > the effect estimate, the bootstrap distribution behind the interval, where the two arms
 > diverge day by day, the sensitivity sweeps, and a **replay of any one of the 500 cases**:
 > pick a case, scrub the 336-hour window, and watch both arms hour by hour, including every
@@ -189,7 +189,7 @@ python -m recovery.cli eval --seed 42 --n 500 --arms control,baseline
 python -m recovery.cli report          # table, intervals, fatigue, refusals, figures
 python -m recovery.cli sweep --param p_self_heal --range 0.5,1.5 --points 9
 python -m recovery.cli repro           # the reproduction gate
-python scripts/build_viewer.py         # regenerate docs/index.html from the ledgers
+python scripts/build_viewer.py         # regenerate index.html from the ledgers
 pytest                                 # 356 tests, 2 skipped without Razorpay keys
 ```
 
@@ -354,7 +354,7 @@ recovery/
 data/
   cohort_seed42.jsonl  the published cohort (latents in a side table the arms never read)
   results/             committed ledgers, manifest, figures
-docs/index.html        the generated readout — never hand-edited
+index.html             the generated readout — never hand-edited
 scripts/build_viewer.py  generates it from the same ledgers `report` reads
 tests/test_adversarial.py  the five adversarial passes; see WHAT_BROKE.md for what they cost
 ```

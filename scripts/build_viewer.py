@@ -1,4 +1,4 @@
-"""Generate ``docs/index.html`` from the committed run artifacts.
+"""Generate ``index.html`` from the committed run artifacts.
 
 **The viewer is generated, never hand-edited.** Every figure on the page is derived
 here from the same ledgers the command line reads, so the page cannot drift from the
@@ -36,7 +36,7 @@ SWEEP_ROOT = ROOT / "data" / "results" / "sweeps"
 SWEEP_JSON = SWEEP_ROOT / "p_self_heal" / "sweep-p_self_heal.json"
 TEMPLATE = ROOT / "scripts" / "viewer.template.html"
 FONTS_CSS = ROOT / "scripts" / "fonts" / "fonts.css"
-OUT = ROOT / "docs" / "index.html"
+OUT = ROOT / "index.html"
 
 CHAIN_PREVIEW_ENTRIES = 3
 

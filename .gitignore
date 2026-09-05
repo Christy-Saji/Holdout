@@ -18,5 +18,5 @@ __pycache__/
 .claude/
 CLAUDE.md
 CONTEXT.md
-docs/prompts/
-docs/video-script.md
+Makefile
+docs/
