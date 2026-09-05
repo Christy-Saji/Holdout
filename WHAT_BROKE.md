@@ -93,7 +93,7 @@ on stdout, and one asserts a clean clone still gets the file written.
 
 ---
 
-## 3. The agent arm was built, tested, and never run
+## 3. The agent arm was built and tested, and got a five-case pilot in the last hours
 
 **Phase 5. Not a bug — a constraint, and a decision about what to do with it.**
 
@@ -108,10 +108,10 @@ by `client.beta.messages.tool_runner`, with cassette record/replay so that publi
 numbers reproduce offline. `tests/test_agent_gating.py` covers it with 23 tests that
 pass with **no API key present**.
 
-**It has never made a single live API request.** `ANTHROPIC_API_KEY` was listed as a
-hard blocker from day 3 in the project's own risk table and it never arrived. Without
-a recording pass there are no cassettes, so replay raises on the first case and the
-arm cannot run at all.
+**It never made a single live API request against Claude.** `ANTHROPIC_API_KEY` was
+listed as a hard blocker from day 3 in the project's own risk table and it never
+arrived. Without a recording pass there are no cassettes, so replay raises on the first
+case and the arm cannot run at all.
 
 **What it cost.** The headline number is control-versus-baseline rather than
 control-versus-agent — a rules-based incumbent measured against a holdout, not an AI
@@ -127,9 +127,43 @@ the rejections are the actual content here:
 | Train a model instead of calling one | Free | The cohort is synthetic and self-generated, so any model fitted to it recovers this project's own simulator parameters. `scoring.py` already documents why its curve deliberately differs from the simulator's: *"assuming we had recovered it exactly would be the tell of a model fitted to its own data."* Doing it anyway would contradict a design decision the repository argues for in writing |
 | Drive the API from a Claude Pro subscription | Free | Outside what a consumer subscription licenses, and it would break the reproducibility claim, which depends on cassettes recorded from a real API. For a submission aimed at a role owning a money-moving service, this is the wrong thing to be caught doing |
 
+**Then the first option was taken anyway, partially, with hours left.** The rejection
+above was correct *on the day it was made* — a day of work to save $15, with three of
+four judged artifacts unwritten. What changed is that the artifacts got written, and the
+port turned out to be smaller than the estimate: the gate lives inside the tool
+functions, so `recovery/agent/groq_runner.py` swaps the planner without touching a
+single rule. `openai/gpt-oss-120b` on Groq, behind the identical twelve rules, in its
+own cassette namespace so a cross-provider replay cannot silently succeed.
+
+**It recorded 5 of 500 cases**, and that is where it stopped: the remaining 495 are
+roughly 9–16 hours of free-tier API calls and there were not 9 hours left.
+
+**No number is published from it, and the reasoning is the same reasoning as the rest of
+this repository.** Five cases cannot support a bootstrap interval, and a five-case run
+is not comparable to the 500-case table. Quoting one would be the exact error the
+project exists to argue against — with the added embarrassment of doing it in the
+document that argues against it.
+
+What the pilot shows, as an observation and not a result: across those 5 cases the agent
+took 6 actions — 4 retries, 1 message, 1 close — and one of its three recoveries came
+from a **contact** rather than a retry, which the retry-only baseline cannot produce.
+Whether that pays for itself at scale is precisely what 5 cases cannot answer.
+
+**And the honest limit on it: none of those 6 actions was denied.** The pilot exercised
+the happy path only. It is not evidence that the gate binds a live model — that evidence
+remains the 628 refusals in the baseline arm, twelve rules evaluated on every one of
+1,270 checks, and the 23 tests.
+
+**The lesson from the reversal.** The original estimate — "roughly a day of work" — was
+wrong by most of a day, and it was wrong because it priced the port as a rewrite of the
+architecture rather than as a swap behind a seam the architecture already had. The
+decision to reject was defensible on the information available; the estimate that fed it
+was not tested. A seam worth building is worth *measuring* before you price the work it
+makes cheap.
+
 **What was preserved instead.** The measurement spine never depended on the agent arm.
 Control versus baseline is a complete result — ₹82,931 incremental, 95% interval
-[₹61,156, ₹105,285], sign surviving a ±50% sweep of the parameter the whole design
+[₹61,719, ₹105,546], sign surviving a ±50% sweep of the parameter the whole design
 rests on, every artifact byte-reproducible offline by `python -m recovery.cli repro`.
 The agent layer stays in the repository, tested, because the tests are the evidence
 that survives the missing number: a denied tool never reaches the transport, and that
@@ -349,4 +383,53 @@ rupee sign U+20B9 lives in it and is on almost every line of the page.
 references no external host at all, so the claim in the README is enforced by a test
 rather than by intent. The one URL it is allowed to contain is the SVG namespace, which
 is an identifier and not a fetch.
+
+---
+
+## 9. The reproduction gate stopped reproducing anything and kept exiting 0
+
+**Phase 8. Found with hours left, by running the gate instead of trusting it.**
+
+`python -m recovery.cli repro` is this project's stated exit criterion — clean clone,
+fresh virtualenv, install from `pyproject.toml` alone, run offline with credentials
+stripped, diff the ledgers byte for byte. It is the one command that certifies every
+published number.
+
+Recording the five-case agent pilot (incident 3) wrote a second run directory,
+`data/results/run-s42-n5`, beside `run-s42-n500`. `repro` resolves its target run the
+same way `report` does, and with two candidates that resolution is ambiguous. So it
+printed one line — `several runs under data\results (run-s42-n5, run-s42-n500); pass
+--run-id to choose one` — did no work at all, and **exited 0**.
+
+**The number is the exit code.** A gate that does seven checks and a gate that does zero
+are indistinguishable to anything reading `$?` — a CI step, a `make` target, or a person
+glancing at a terminal before recording a video. The project's own pre-flight checklist
+said "`repro` passes", and by the only mechanical definition of passing available, it
+did.
+
+**How it was found.** Not by the test suite, which stayed green at 356 passing, and not
+by the gate itself. It was found because the gate was actually run and its *output* was
+read, on a checklist pass in the last hours. Had it been ticked off on the exit code, the
+submission would have claimed byte-reproducibility on the strength of a command that
+never opened the repository.
+
+**The fix, and the real one.** Immediately: `repro --run-id run-s42-n500`, which passes
+all 7 checks from a fresh venv with `ANTHROPIC_API_KEY`, `RAZORPAY_KEY_ID` and
+`RAZORPAY_KEY_SECRET` stripped from the child environment, and byte-identical cohort
+(145,696), control (276,972) and baseline (4,025,832) artifacts. The pre-flight now says
+to read for `reproduced: all 7 checks passed` rather than to trust a green exit.
+
+The real fix, not made under this deadline and named rather than pretended: **ambiguity
+in a verification gate must be a non-zero exit.** `report` is a convenience command and
+may reasonably stop and ask; `repro` asserts a property, and a command that asserts a
+property must fail when it cannot evaluate it. The two share a run-resolution helper and
+should not share its behaviour on failure.
+
+**What it changed about the design.** Every other invariant in this project is enforced
+by a test — unknown decline codes raise, the ledger has no update path, the policy engine
+does not short-circuit. The gate that enforces *all* of them was itself enforced by
+nothing but a human reading a terminal. This is the second entry in this file about a
+check that passed for the wrong reason; the first (incident 1) was three RBI tests. The
+pattern is the lesson: **a passing check is evidence only if you know what it would take
+to make it fail.**
 

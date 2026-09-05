@@ -1,8 +1,22 @@
+# secrets and environments
 .env
+.venv/
+venv/
+
+# python build and cache artifacts
 __pycache__/
 *.pyc
 .pytest_cache/
-.venv/
-venv/
 *.egg-info/
+
+# os
 .DS_Store
+
+# local tooling and build-process notes -- kept on disk, out of the submission.
+# These are working documents addressed to the build process rather than to a
+# reader of the project, so they are deliberately not part of the public repo.
+.claude/
+CLAUDE.md
+CONTEXT.md
+docs/prompts/
+docs/video-script.md
