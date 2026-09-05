@@ -37,7 +37,12 @@ from recovery.transport.base import Action, CaseState, Transport
 
 
 class AgentArm:
-    """Plans each case once with Claude, then executes the plan through the gate."""
+    """Plans each case once with a model, then executes the plan through the gate.
+
+    Which model is a runner detail, not an arm detail: the gate lives inside the tool
+    functions, so this class is identical whether the planner is the Anthropic tool
+    runner or the Groq one.
+    """
 
     name = "agent"
 
@@ -50,8 +55,15 @@ class AgentArm:
             root=Path(ctx.options.get("cassettes") or DEFAULT_CASSETTE_ROOT),
             mode=str(ctx.options.get("mode") or MODE_REPLAY),
         )
-        self.planner = ctx.options.get("planner") or Planner(
-            gate=self.gate, params=ctx.params, store=self.store
+        # Three ways in, narrowest first: an already-built planner (tests inject a fake
+        # here), a factory that gets this arm's gate and store (how --provider groq
+        # arrives, since the CLI has neither until the harness builds them), and
+        # otherwise the Anthropic tool-runner planner this arm was designed around.
+        factory = ctx.options.get("planner_factory")
+        self.planner = (
+            ctx.options.get("planner")
+            or (factory(self.gate, ctx.params, self.store) if factory else None)
+            or Planner(gate=self.gate, params=ctx.params, store=self.store)
         )
         self.plans: dict[str, PlanResult] = {}
         self._queue: dict[str, list[Action]] = {}

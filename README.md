@@ -133,15 +133,36 @@ covers it with 23 tests — including proof that a policy-denied tool call never
 the transport, that a denial writes a ledger entry with its `rule_id` and no action,
 and that replay reproduces a recorded plan exactly with no API key present.
 
-**It has never made a live API call.** Recording the cassettes requires an
-`ANTHROPIC_API_KEY` that was not available before the submission date. Rather than
-publish a number from an unrecorded arm, or rush a swap onto a different model
-provider that would have invalidated the architecture it was designed around, the
-agent arm is reported as built-and-tested-but-unrecorded.
+**The `ANTHROPIC_API_KEY` it was designed around never arrived**, so the arm could not
+be recorded against Claude at all. In the final hours before submission a Groq-hosted
+open model (`openai/gpt-oss-120b`) was wired in as an alternative planner via
+`--provider groq`. This is a smaller change than it sounds: the policy gate lives
+*inside the tool functions*, not in the model loop, so the six tools, their schemas and
+every rule that screens them are identical whichever model is planning. Groq recordings
+are kept in their own cassette namespace, because two providers answer the same prompt
+differently and replaying one into the other would be a silent cross-provider miss.
 
-The measurement spine does not depend on it. Control versus baseline is a complete,
-reproducible, interval-bounded result on its own, and the third arm slots into the
-same harness the moment cassettes exist.
+**Cassettes exist for 5 of the 500 cases, and no agent-arm figure is published from
+them.** Five cases cannot support a bootstrap interval, and a five-case run is not
+comparable to the 500-case table above. Quoting a number from it would be exactly the
+kind of claim this repository was built to argue against.
+
+What the pilot does show, stated as an observation and not as a result: across those 5
+cases the agent took 6 actions — 4 retries, 1 message, 1 close — and one of its three
+recoveries was caused by a **contact** rather than a retry. That is a move the
+retry-only baseline has no way to produce. Whether it pays for itself at scale is
+precisely the question 5 cases cannot answer.
+
+**It is not evidence that the gate binds in a live run.** None of those 6 actions were
+denied, so the pilot exercised the happy path only. The evidence that the policy engine
+actually refuses things remains where it was: 628 denied actions in the baseline arm,
+12 rules evaluated on every one of 1,270 checks with no short-circuit, and 23 tests in
+`tests/test_agent_gating.py` — including proof that a denied tool call never reaches
+the transport.
+
+The measurement spine does not depend on any of this. Control versus baseline is a
+complete, reproducible, interval-bounded result on its own, and the agent arm slots
+into the same harness the moment a full set of cassettes exists.
 
 **Contact fatigue is computed and reports zero.** `report` prints mean and P95 contacts
 per customer, and both arms show 0.00 across all 265 customers. That is not a broken

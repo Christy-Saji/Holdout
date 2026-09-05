@@ -585,12 +585,25 @@ input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;
     loop over six tools, and its tests pass with no API key present — including proof
     that a denied tool never reaches the transport, and that a recorded plan replays to
     identical actions.</p>
-    <p><strong>It has never made a live API call.</strong> Recording its cassettes needs
-    a credential that was not available before the submission date. Rather than publish a
-    number from an unrecorded arm, the arm is reported as built, tested, and unrecorded.</p>
-    <p style="margin-bottom:0">The measurement spine never depended on it. Holdout versus
-    treated is a complete, reproducible, interval-bounded result, and the third arm slots
-    into the same harness the moment cassettes exist.</p>
+    <p>The <span class="d">ANTHROPIC_API_KEY</span> it was designed around never arrived.
+    In the final hours a Groq-hosted open model (<span class="d">openai/gpt-oss-120b</span>)
+    was wired in as an alternative planner. The gate lives <em>inside the tool functions</em>,
+    not in the model loop, so the six tools and every rule screening them are identical
+    whichever model is planning.</p>
+    <p><strong>Cassettes exist for 5 of the 500 cases, and no figure on this page comes
+    from them.</strong> Five cases cannot support a bootstrap interval, and a five-case run
+    is not comparable to the 500-case table. Quoting a number from it would be the exact
+    claim this page was built to argue against.</p>
+    <p>An observation, not a result: across those 5 cases the agent took 6 actions —
+    4 retries, 1 message, 1 close — and one of its three recoveries came from a
+    <strong>contact</strong> rather than a retry, a move the retry-only baseline cannot
+    make. <strong>None of the 6 was denied</strong>, so the pilot exercised the happy path
+    only and is no evidence the gate binds live. That evidence stays where it was: the
+    628 refusals above, 12 rules on every one of 1,270 checks, and a test proving a denied
+    tool never reaches the transport.</p>
+    <p style="margin-bottom:0">The measurement spine never depended on any of this. Holdout
+    versus treated is a complete, reproducible, interval-bounded result, and the agent arm
+    slots into the same harness the moment a full set of cassettes exists.</p>
   </div>
 </section>
 

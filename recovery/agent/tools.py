@@ -308,9 +308,14 @@ def get_case_detail(case_id: str) -> str:
     reason = lookup(state.decline_reason)
     detail = state.to_dict()
     detail["decline_class"] = reason.klass.value
-    detail["decline_description"] = reason.description
     detail["min_retry_wait_h"] = reason.min_retry_wait_h
-    detail["retryable"] = reason.retry_success_base > 0.0
+    # ``is_retryable`` is the taxonomy's own answer. This line used to re-derive it as
+    # ``retry_success_base > 0.0``, next to a ``reason.description`` that has never
+    # existed on ``DeclineReason`` -- so the first tool call of the first case raised
+    # AttributeError. Nothing caught it because the arm had never been run: the tests
+    # mock the model asking for this tool, not the tool answering. See WHAT_BROKE.md
+    # incident 9.
+    detail["retryable"] = reason.is_retryable
     detail["window_h"] = session.params.window_h
     detail["spent_so_far_paise"] = session.provisional.spend(state.case_id)
     return json.dumps(detail, sort_keys=True)

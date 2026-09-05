@@ -1,0 +1,28 @@
+{
+  "arms": [
+    "control",
+    "agent"
+  ],
+  "n": 5,
+  "params": {
+    "attempt_decay": [
+      1.0,
+      0.4,
+      0.24,
+      0.1,
+      0.04,
+      0.015,
+      0.005
+    ],
+    "costs": {
+      "email_paise": 1,
+      "retry_paise": 300,
+      "sms_paise": 20,
+      "whatsapp_paise": 35
+    },
+    "p_self_heal_scale": 1.0,
+    "window_h": 336
+  },
+  "run_id": "run-s42-n5",
+  "seed": 42
+}

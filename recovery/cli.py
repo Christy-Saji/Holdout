@@ -67,6 +67,20 @@ def _cmd_eval(args: argparse.Namespace) -> int:
     cases = _cohort_for_eval(args.seed, args.n)
 
     agent_options = {"mode": "record" if args.record else ("live" if args.live else "replay")}
+    if getattr(args, "provider", "anthropic") == "groq":
+        from recovery.agent import groq_runner
+
+        model = args.model or groq_runner.MODEL
+        # Separate cassette namespace: the two providers answer the same prompt
+        # differently, so their recordings are different artifacts and replaying one
+        # into the other runner would be a silent cross-provider miss.
+        agent_options["cassettes"] = args.cassettes or groq_runner.DEFAULT_GROQ_CASSETTES
+        agent_options["planner_factory"] = lambda gate, params, store: groq_runner.GroqPlanner(
+            gate=gate, params=params, store=store, model=model
+        )
+        print(f"agent arm: groq provider, model {model}")
+    elif args.cassettes:
+        agent_options["cassettes"] = args.cassettes
     try:
         result = harness.run(
             seed=args.seed,
@@ -172,6 +186,15 @@ def build_parser() -> argparse.ArgumentParser:
     p_eval.add_argument("--arms", type=lambda s: s.split(","), default=["control"])
     p_eval.add_argument("--record", action="store_true", help="agent arm: re-record cassettes")
     p_eval.add_argument("--live", action="store_true", help="agent arm: bypass cassettes")
+    p_eval.add_argument(
+        "--provider",
+        choices=("anthropic", "groq"),
+        default="anthropic",
+        help="agent arm: which model drives the planner. The policy gate is identical "
+        "either way -- it lives inside the tool functions, not in the runner.",
+    )
+    p_eval.add_argument("--model", default=None, help="agent arm: override the model id")
+    p_eval.add_argument("--cassettes", default=None, help="agent arm: cassette directory")
     p_eval.set_defaults(func=_cmd_eval)
 
     p_cohort = sub.add_parser("cohort", help="regenerate the synthetic cohort artifact")

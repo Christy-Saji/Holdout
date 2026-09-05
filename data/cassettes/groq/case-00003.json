@@ -1,0 +1,226 @@
+{
+  "case_id": "case-00003",
+  "turns": [
+    {
+      "key": "24bf7623aa249718a764739c701d776dacc6728522a2a47135613efcd7834864",
+      "response": {
+        "choices": [
+          {
+            "finish_reason": "tool_calls",
+            "index": 0,
+            "logprobs": null,
+            "message": {
+              "annotations": null,
+              "content": null,
+              "executed_tools": null,
+              "function_call": null,
+              "reasoning": "We need to retrieve case detail via get_case_detail.",
+              "role": "assistant",
+              "tool_calls": [
+                {
+                  "function": {
+                    "arguments": "{\"case_id\":\"case-00003\"}",
+                    "name": "get_case_detail"
+                  },
+                  "id": "fc_eca5f588-e13b-446e-8a1f-f7b16a348ec5",
+                  "type": "function"
+                }
+              ]
+            }
+          }
+        ],
+        "created": 1788618241,
+        "id": "chatcmpl-378a118f-4c8e-4588-8729-a9fced054947",
+        "mcp_list_tools": null,
+        "model": "openai/gpt-oss-120b",
+        "object": "chat.completion",
+        "service_tier": "on_demand",
+        "system_fingerprint": "fp_e5b4e54fbb",
+        "usage": {
+          "completion_time": 0.0924119,
+          "completion_tokens": 44,
+          "completion_tokens_details": {
+            "reasoning_tokens": 12
+          },
+          "prompt_time": 0.012211058,
+          "prompt_tokens": 2747,
+          "prompt_tokens_details": {
+            "cached_tokens": 2560
+          },
+          "queue_time": 0.394023583,
+          "total_time": 0.104622958,
+          "total_tokens": 2791
+        },
+        "usage_breakdown": null,
+        "x_groq": {
+          "debug": null,
+          "id": "req_01m1rz8wqke33vzc1btevytbty",
+          "seed": 1493003583,
+          "usage": null
+        }
+      }
+    },
+    {
+      "key": "5994fe1275cd48bd1436bede466966d1c02b82868e1cbb483d1f6e93557f6a14",
+      "response": {
+        "choices": [
+          {
+            "finish_reason": "tool_calls",
+            "index": 0,
+            "logprobs": null,
+            "message": {
+              "annotations": null,
+              "content": null,
+              "executed_tools": null,
+              "function_call": null,
+              "reasoning": "We have a soft decline insufficient_funds, amount 39900 paise = \u20b9399. That's moderate. We should schedule a well-timed retry. Failure at 2026-08-07 12:00 IST. Insufficient funds best windows: 1st-3rd of month or 28th onward. The failure date is 7 Aug, within month. Next window reachable within 14 days (by hour 336). The 28th onward of August is 28 Aug, which is 21 days away, beyond 14 days. The 1st-3rd of next month (Sep 1-3) is also beyond 14 days (25 days). So within 14 days we cannot hit the optimal windows. But we can still attempt a retry after cooling window. min_retry_wait_h is 24 (given). So earliest retry at hour 24 (i.e., next day 12:00 on Aug 8). But maybe we can schedule at hour 24 or later. Since cost is 300 paise and amount is 39900, one retry is cost-effective. Maybe schedule a second retry if first fails? But we have limited attempts due to diminishing returns; first well-timed retry does most. Since not optimal window, maybe schedule two retries: one at hour 24 and another at hour 72 (3 days later) maybe? Cost total 600 paise, still < amount. But policy AttemptCap: retry only while expected recovery exceeds cost. Hard to compute but likely okay for moderate amount. However we might want to avoid multiple retries within 14 days if not optimal. Probably just one retry at hour 24 is enough.\n\nCheck policy for schedule_retry at hour 24.",
+              "role": "assistant",
+              "tool_calls": [
+                {
+                  "function": {
+                    "arguments": "{\"action_type\":\"retry\",\"at_hour\":24,\"case_id\":\"case-00003\"}",
+                    "name": "check_policy"
+                  },
+                  "id": "fc_c59c5544-5f78-43b7-a8ae-82d32973f89c",
+                  "type": "function"
+                }
+              ]
+            }
+          }
+        ],
+        "created": 1788618245,
+        "id": "chatcmpl-8b64d777-f12c-415d-a93a-f82b75fcd4a3",
+        "mcp_list_tools": null,
+        "model": "openai/gpt-oss-120b",
+        "object": "chat.completion",
+        "service_tier": "on_demand",
+        "system_fingerprint": "fp_02b0d31eca",
+        "usage": {
+          "completion_time": 0.841854264,
+          "completion_tokens": 402,
+          "completion_tokens_details": {
+            "reasoning_tokens": 355
+          },
+          "prompt_time": 0.141673931,
+          "prompt_tokens": 2956,
+          "prompt_tokens_details": null,
+          "queue_time": 0.341527543,
+          "total_time": 0.983528195,
+          "total_tokens": 3358
+        },
+        "usage_breakdown": null,
+        "x_groq": {
+          "debug": null,
+          "id": "req_01m1rz908jejf8f1a5nzsty0m9",
+          "seed": 1565697190,
+          "usage": null
+        }
+      }
+    },
+    {
+      "key": "cebe99eebc640def6e80e7e0e7d5134b71bf78a4b14198b03e50daff632c80f9",
+      "response": {
+        "choices": [
+          {
+            "finish_reason": "tool_calls",
+            "index": 0,
+            "logprobs": null,
+            "message": {
+              "annotations": null,
+              "content": null,
+              "executed_tools": null,
+              "function_call": null,
+              "reasoning": "We have a soft decline insufficient_funds. For UPI, but the cooling window min_retry_wait_h is 24 hours. We should aim for a date that aligns with salary refill windows. Failure time is 2026-08-07 12:00 IST (day 7). Salary accounts refill at month boundary: 1st-3rd and 28th onward. Within 14 days (up to hour 336 ~ 14 days). So we could schedule retry on 2026-08-08 (hour 24) is day 8, not in salary window. Better to aim for 2026-08-28 onward or 2026-09-01-3. Within 14 days from Aug 7 is up to Aug 21. So cannot reach 28th. We could aim for Aug 1-3? That's earlier. Not possible. So the next best is the earliest possible retry after cooling: 24h at hour 24 (Aug 8). Even if not optimal, still chance. Could consider also a second retry later, maybe hour 72 (3 days) or hour 120 (5 days). Need to consider cost vs expected recovery. Amount 39900 paise (Rs 399). Expected recovery maybe 20%? The policy gave expected recovery 8080p for first retry (from check_policy). So attempt cap allows. Additional retries have diminishing returns; second may be low. Probably schedule only one retry at hour 24.\n\nWe should schedule_retry with idempotency_key \"retry-1\". Let's do that.",
+              "role": "assistant",
+              "tool_calls": [
+                {
+                  "function": {
+                    "arguments": "{\"at_hour\":24,\"case_id\":\"case-00003\",\"idempotency_key\":\"retry-1\"}",
+                    "name": "schedule_retry"
+                  },
+                  "id": "fc_b4eb6d91-e993-4fbd-98f6-f90017c4ec3e",
+                  "type": "function"
+                }
+              ]
+            }
+          }
+        ],
+        "created": 1788618273,
+        "id": "chatcmpl-155e55d3-ff9b-442b-aa8a-f558183c3503",
+        "mcp_list_tools": null,
+        "model": "openai/gpt-oss-120b",
+        "object": "chat.completion",
+        "service_tier": "on_demand",
+        "system_fingerprint": "fp_dee443f41b",
+        "usage": {
+          "completion_time": 0.767157058,
+          "completion_tokens": 366,
+          "completion_tokens_details": {
+            "reasoning_tokens": 326
+          },
+          "prompt_time": 0.168271092,
+          "prompt_tokens": 3335,
+          "prompt_tokens_details": null,
+          "queue_time": 0.34048329,
+          "total_time": 0.93542815,
+          "total_tokens": 3701
+        },
+        "usage_breakdown": null,
+        "x_groq": {
+          "debug": null,
+          "id": "req_01m1rz9vg6e42skfsntk45cz5m",
+          "seed": 1597808724,
+          "usage": null
+        }
+      }
+    },
+    {
+      "key": "cd3bcd47d92577fe87024ff2ecd626de55f5b5897749bbf9a74f02d201bdf885",
+      "response": {
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "index": 0,
+            "logprobs": null,
+            "message": {
+              "annotations": null,
+              "content": "The case has a **soft** decline (`insufficient_funds`). A well\u2011timed retry is the only action that can recover the amount, and the policy check confirms that a retry at hour\u202f24 (i.e.,\u202f2026\u201108\u201108\u202f12:00\u202fIST) is allowed and cost\u2011effective. No contact is needed because the instrument does not require customer action.\n\n**Action taken**\n\n- **Scheduled retry** \u2013\u202f`retry-1` at hour\u202f24 (2026\u201108\u201108\u202f12:00\u202fIST) \u2013\u202fcost\u202f300\u202fpaise.\n\nThe case now has a single, policy\u2011compliant recovery attempt scheduled. No further actions are required.",
+              "executed_tools": null,
+              "function_call": null,
+              "reasoning": "We need to consider the timing. Insufficient_funds: best windows are 1st-3rd of month or 28th onward. Failure at 2026-08-07 12:00 IST, which is August 7. Within 14 days window (till Aug 21). The best window is the 28th onward, but that is after 21st, outside window. Also the 1st-3rd of next month is after window. So within 14 days, maybe mid-month is less optimal but still we can retry. We scheduled at hour 24 (i.e., Aug 8 12:00). That is not aligned with salary dates but it's okay. Could we schedule later, perhaps at hour 72 (Aug 10) or 120 (Aug 13) etc. Since we only have one retry, maybe we could schedule at hour 72 to give more chance? The policy shows expected recovery 8080p, cost 300p, good. But we may want to schedule at a later point near 28th? Not possible. So schedule at hour 24 is fine.\n\nWe may also consider sending a payment reminder to increase chance, but cost is low, but contact frequency limit 3 per week. Since amount is 39900p (~399 rupees), cost of retry 300p = 3 rupees, recovery expected maybe 399? So net positive.\n\nGiven we already scheduled a retry, no need for further actions. The plan is done.",
+              "role": "assistant",
+              "tool_calls": null
+            }
+          }
+        ],
+        "created": 1788618304,
+        "id": "chatcmpl-e489d58f-623f-4f76-89fb-0b8a5a2b33d4",
+        "mcp_list_tools": null,
+        "model": "openai/gpt-oss-120b",
+        "object": "chat.completion",
+        "service_tier": "on_demand",
+        "system_fingerprint": "fp_93703442d9",
+        "usage": {
+          "completion_time": 0.97437752,
+          "completion_tokens": 466,
+          "completion_tokens_details": {
+            "reasoning_tokens": 313
+          },
+          "prompt_time": 0.185967817,
+          "prompt_tokens": 3740,
+          "prompt_tokens_details": null,
+          "queue_time": 0.392573911,
+          "total_time": 1.160345337,
+          "total_tokens": 4206
+        },
+        "usage_breakdown": null,
+        "x_groq": {
+          "debug": null,
+          "id": "req_01m1rzas8des98jcm49xxgfyah",
+          "seed": 583060766,
+          "usage": null
+        }
+      }
+    }
+  ]
+}

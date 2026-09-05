@@ -1,0 +1,165 @@
+{
+  "case_id": "case-00002",
+  "turns": [
+    {
+      "key": "3b2ffd38292465d94d4a5019e3c82398f20af6b0fc33ef3a1b272bc255c6355a",
+      "response": {
+        "choices": [
+          {
+            "finish_reason": "tool_calls",
+            "index": 0,
+            "logprobs": null,
+            "message": {
+              "annotations": null,
+              "content": null,
+              "executed_tools": null,
+              "function_call": null,
+              "reasoning": "We need to act. Decline reason: lost_card. That's a hard decline (hard class). According to rules: HardDeclineNoRetry: never retry. Also contact won't help? For lost card, need customer to provide new card; that's action-required? Actually lost_card is hard (per description: stolen card, lost card, invalid account...). So hard: permanent, no retry, contact may not help? The instructions: Hard: permanent. No retry ever succeeds. Retrying burns fee and trips fraud heuristics. The right number of retries is zero. Contact is not mentioned as effective; but maybe can ask for new card? However policy: HardDeclineNoRetry prohibits retry. Contact might be allowed? Not explicitly forbidden, but \"hard\" suggests no contact likely helps; but we could send a message asking to update instrument? Possibly allowed, but cost vs recover: amount is 34,300 paise = Rs 343. That's moderate. Could be worth contacting to get updated card; but rule \"HardDeclineNoRetry\" only prohibits retries; not messages. However \"ActionDeclineNoRetry\" is for action-required declines; but lost_card is hard. So we could send an \"update_instrument\" message. Need to respect ContactFrequency: max 3 per week, at least a day apart. No contacts so far, so okay. QuietHours: sending SMS/WhatsApp between 21:00-09:00 not allowed. Failure at 03:00 IST, hour0 is 03:00. Sending now would be within quiet hours for SMS/WhatsApp. Could use email (cost 1) unrestricted. So best is send an email \"update_instrument\". Use send_message with at_hour maybe 10 hours later (so 13:00 IST) within window, still day 0 but after quiet hours. Should we check policy first? Use check_policy to ensure allowed.\n\nLet's call check_policy for email at hour 10.",
+              "role": "assistant",
+              "tool_calls": [
+                {
+                  "function": {
+                    "arguments": "{\"action_type\":\"message\",\"at_hour\":10,\"case_id\":\"case-00002\",\"channel\":\"email\",\"template\":\"update_instrument\"}",
+                    "name": "check_policy"
+                  },
+                  "id": "fc_6fa7d052-72c5-4fc9-adf2-79e7d217cfc6",
+                  "type": "function"
+                }
+              ]
+            }
+          }
+        ],
+        "created": 1788618168,
+        "id": "chatcmpl-ae15ec5a-5c26-4264-8e6c-aa1017b71507",
+        "mcp_list_tools": null,
+        "model": "openai/gpt-oss-120b",
+        "object": "chat.completion",
+        "service_tier": "on_demand",
+        "system_fingerprint": "fp_c800245357",
+        "usage": {
+          "completion_time": 0.989431744,
+          "completion_tokens": 466,
+          "completion_tokens_details": {
+            "reasoning_tokens": 403
+          },
+          "prompt_time": 0.130999163,
+          "prompt_tokens": 2745,
+          "prompt_tokens_details": null,
+          "queue_time": 0.303122309,
+          "total_time": 1.120430907,
+          "total_tokens": 3211
+        },
+        "usage_breakdown": null,
+        "x_groq": {
+          "debug": null,
+          "id": "req_01m1rz6mk5ek5afmmrnctyzq7e",
+          "seed": 354202154,
+          "usage": null
+        }
+      }
+    },
+    {
+      "key": "5152d25e00029fd0fcc60712c0866db7ff26b35a386c209bd1bd0a3455003d12",
+      "response": {
+        "choices": [
+          {
+            "finish_reason": "tool_calls",
+            "index": 0,
+            "logprobs": null,
+            "message": {
+              "annotations": null,
+              "content": null,
+              "executed_tools": null,
+              "function_call": null,
+              "reasoning": "We have a case with decline reason lost_card. That's a hard decline. According to rules: HardDeclineNoRetry => never retry. Also ActionDeclineNoRetry? Actually lost_card is hard decline, so we should not retry. Contact? Possibly could send a message to update instrument? However is there any chance of recovery? Lost card is permanent; contacting to ask them to update card maybe could get a new card details and future payments; but this is a recurring payment; we could ask to update instrument. The cost is tiny (email 1 paise). However BudgetCeiling rule says expected recovery is 0p. Because amount is 34,300 paise = Rs 343.00. But expected recovery? Since hard decline, no retry can succeed. However maybe contacting to get new instrument could lead to future successful payments? The policy says for hard declines, retry never succeeds; contacting also might not help because lost card can't be used. But we could ask to update instrument for future payments. However the case is a specific failed payment; the amount is 34300 paise. The question: \"Decide what to do with this case and schedule it.\" Since it's a hard decline, best to close case. The rule BudgetCeiling says expected recovery is 0; contact also would cost >0, not allowed.\n\nThus we should close the case with reason \"hard_decline_no_retry\". Let's call close_case.",
+              "role": "assistant",
+              "tool_calls": [
+                {
+                  "function": {
+                    "arguments": "{\"case_id\":\"case-00002\",\"reason\":\"hard_decline_lost_card\"}",
+                    "name": "close_case"
+                  },
+                  "id": "fc_a08a5402-2cf1-4f41-8a11-f68fbce41f7a",
+                  "type": "function"
+                }
+              ]
+            }
+          }
+        ],
+        "created": 1788618190,
+        "id": "chatcmpl-bf15ca1e-abe2-4862-9914-f6a141153b15",
+        "mcp_list_tools": null,
+        "model": "openai/gpt-oss-120b",
+        "object": "chat.completion",
+        "service_tier": "on_demand",
+        "system_fingerprint": "fp_90620edd96",
+        "usage": {
+          "completion_time": 0.677139853,
+          "completion_tokens": 328,
+          "completion_tokens_details": {
+            "reasoning_tokens": 293
+          },
+          "prompt_time": 0.133169559,
+          "prompt_tokens": 3189,
+          "prompt_tokens_details": null,
+          "queue_time": 0.393056791,
+          "total_time": 0.810309412,
+          "total_tokens": 3517
+        },
+        "usage_breakdown": null,
+        "x_groq": {
+          "debug": null,
+          "id": "req_01m1rz7anfeeqsj739h9d0ak23",
+          "seed": 917784250,
+          "usage": null
+        }
+      }
+    },
+    {
+      "key": "939d16917a0e497a2190706b20ef53948a41bd4b9256907d3b7928accf6526a1",
+      "response": {
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "index": 0,
+            "logprobs": null,
+            "message": {
+              "annotations": null,
+              "content": "The decline is a hard \u201clost\u202fcard\u201d.  \nHard declines never succeed on a retry and any retry would only cost money and damage the merchant\u2019s approval rate. There is no viable contact path that can resolve a lost\u2011card situation, and the expected recovery is zero, so even a cheap email exceeds the budget ceiling.\n\n**Action taken:** closed the case with reason *hard_decline_lost_card*.",
+              "executed_tools": null,
+              "function_call": null,
+              "reasoning": null,
+              "role": "assistant",
+              "tool_calls": null
+            }
+          }
+        ],
+        "created": 1788618217,
+        "id": "chatcmpl-767c7dc8-cf28-4d23-b657-4dcef678dd20",
+        "mcp_list_tools": null,
+        "model": "openai/gpt-oss-120b",
+        "object": "chat.completion",
+        "service_tier": "on_demand",
+        "system_fingerprint": "fp_8ea50c0161",
+        "usage": {
+          "completion_time": 0.179642128,
+          "completion_tokens": 86,
+          "completion_tokens_details": null,
+          "prompt_time": 0.147247449,
+          "prompt_tokens": 3258,
+          "prompt_tokens_details": null,
+          "queue_time": 0.340034085,
+          "total_time": 0.326889577,
+          "total_tokens": 3344
+        },
+        "usage_breakdown": null,
+        "x_groq": {
+          "debug": null,
+          "id": "req_01m1rz85d2etvsxnhx8taz5rsr",
+          "seed": 613070896,
+          "usage": null
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,703 @@
+{
+  "case_id": "case-00004",
+  "turns": [
+    {
+      "key": "b57de2570f1ab4a4452daf98a9326b395c69420372d37825053bd6c546663b05",
+      "response": {
+        "choices": [
+          {
+            "finish_reason": "tool_calls",
+            "index": 0,
+            "logprobs": null,
+            "message": {
+              "annotations": null,
+              "content": null,
+              "executed_tools": null,
+              "function_call": null,
+              "reasoning": "We need to get case detail via get_case_detail.",
+              "role": "assistant",
+              "tool_calls": [
+                {
+                  "function": {
+                    "arguments": "{\"case_id\":\"case-00004\"}",
+                    "name": "get_case_detail"
+                  },
+                  "id": "fc_6718c421-3c8d-41b4-b98d-8a80b9e48de4",
+                  "type": "function"
+                }
+              ]
+            }
+          }
+        ],
+        "created": 1788618326,
+        "id": "chatcmpl-65b56b28-6f4e-4d02-bc6d-248d558ad10a",
+        "mcp_list_tools": null,
+        "model": "openai/gpt-oss-120b",
+        "object": "chat.completion",
+        "service_tier": "on_demand",
+        "system_fingerprint": "fp_77b12279f9",
+        "usage": {
+          "completion_time": 0.091636037,
+          "completion_tokens": 44,
+          "completion_tokens_details": {
+            "reasoning_tokens": 12
+          },
+          "prompt_time": 0.035208381,
+          "prompt_tokens": 2748,
+          "prompt_tokens_details": {
+            "cached_tokens": 2560
+          },
+          "queue_time": 0.335071562,
+          "total_time": 0.126844418,
+          "total_tokens": 2792
+        },
+        "usage_breakdown": null,
+        "x_groq": {
+          "debug": null,
+          "id": "req_01m1rzbge7e2xav71q4hg1ybn1",
+          "seed": 658876761,
+          "usage": null
+        }
+      }
+    },
+    {
+      "key": "ca10acee8b08ab82994301aad35fa913f06f445e303d181802fb87c0a91b29eb",
+      "response": {
+        "choices": [
+          {
+            "finish_reason": "tool_calls",
+            "index": 0,
+            "logprobs": null,
+            "message": {
+              "annotations": null,
+              "content": null,
+              "executed_tools": null,
+              "function_call": null,
+              "reasoning": "We have a soft decline (gateway_timeout) for UPI, amount 29900 paise = Rs 299. It's recurring under a mutual fund mandate, not first debit. Soft decline, so retries possible. Need to consider cooling windows: min_retry_wait_h is 1 hour. Also need to time for insufficient_funds? But reason is gateway_timeout; not insufficient_funds. However soft declines include several reasons; we may still want to retry maybe soon.\n\nWe want to maximize recovery. For soft declines, first well-timed retry is best. Since amount is modest Rs 299, cost of a retry is 300 paise = Rs 3. So cost is 1% of amount, acceptable. Could do maybe two retries if first fails.\n\nCheck policy for best hour. Use check_policy for a retry at hour maybe 4? Also need to consider quiet hours: The failure was at 23:00 IST (11 PM). Quiet hours for SMS/WhatsApp, but retry is not communication, just debit attempt. No restriction. But maybe we want to retry when user likely has money: Indian salary accounts refill at month boundaries. Not given date. The failure at Aug 20. Within month, likely not 1st-3rd or 28 onward. Could try near 28th? That's 8 days later (hour 8*24 = 192). That's within 14 days (336 hours). Could schedule first retry at hour 192? But we want early attempt if possible? Maybe we can do a retry at hour 2 (2am) but might be within quiet hours? Not relevant.\n\nGiven soft decline gateway_timeout maybe due to network; could try sooner. The cooling window min 1 hour, but maybe we should wait a few hours to avoid immediate repeat. Could schedule retry at hour 4 (i.e., 3am). But maybe better to schedule at hour 24 (next day) when user active. Let's check policy via check_policy at hour 24.",
+              "role": "assistant",
+              "tool_calls": [
+                {
+                  "function": {
+                    "arguments": "{\"action_type\":\"retry\",\"at_hour\":24,\"case_id\":\"case-00004\"}",
+                    "name": "check_policy"
+                  },
+                  "id": "fc_2a54689b-78eb-4ee1-8ab6-be3d3f094527",
+                  "type": "function"
+                }
+              ]
+            }
+          }
+        ],
+        "created": 1788618328,
+        "id": "chatcmpl-cf98f545-b3c9-4f38-92bd-bbb7cd3f02c3",
+        "mcp_list_tools": null,
+        "model": "openai/gpt-oss-120b",
+        "object": "chat.completion",
+        "service_tier": "on_demand",
+        "system_fingerprint": "fp_9241e9962b",
+        "usage": {
+          "completion_time": 0.971665564,
+          "completion_tokens": 458,
+          "completion_tokens_details": {
+            "reasoning_tokens": 411
+          },
+          "prompt_time": 0.124342619,
+          "prompt_tokens": 2958,
+          "prompt_tokens_details": null,
+          "queue_time": 0.392971611,
+          "total_time": 1.096008183,
+          "total_tokens": 3416
+        },
+        "usage_breakdown": null,
+        "x_groq": {
+          "debug": null,
+          "id": "req_01m1rzbgyjem18nn0fpmcx5ena",
+          "seed": 1398381240,
+          "usage": null
+        }
+      }
+    },
+    {
+      "key": "93bed20e2cd2965f9cfc0cb7ef19e5341d8dfe14ef4ebfb903a2483258b4dab8",
+      "response": {
+        "choices": [
+          {
+            "finish_reason": "tool_calls",
+            "index": 0,
+            "logprobs": null,
+            "message": {
+              "annotations": null,
+              "content": null,
+              "executed_tools": null,
+              "function_call": null,
+              "reasoning": "We have a soft decline (gateway_timeout) for UPI, amount 29900 paise (\u20b9299). It's a recurring, not first debit, mandate category mutual_fund (but UPI, maybe not e-mandate). No e-mandate notice needed. It's soft, so retry possible. Need to schedule retry at a good timing. For insufficient_funds typical windows are 1-3rd and 28- end of month. This failure time is Aug 20 23:00 IST. Within next 14 days (till Sep 3). The 28th Aug is within 8 days. So we could schedule retry at hour corresponding to Aug 28 10:00 perhaps. We need to avoid quiet hours for messages, but retry is fine any hour. Need to respect cooling window; min_retry_wait_h is 1 hour. So scheduling at hour 24 is allowed per policy check. However better to target 28th. Let's compute hour offset: Failure at Aug 20 23:00. Aug 28 10:00 is 7 days + 11 hours = 7*24 + 11 = 168 + 11 = 179 hours. That's within 336. Let's check policy for retry at hour 179.",
+              "role": "assistant",
+              "tool_calls": [
+                {
+                  "function": {
+                    "arguments": "{\"action_type\":\"retry\",\"at_hour\":179,\"case_id\":\"case-00004\"}",
+                    "name": "check_policy"
+                  },
+                  "id": "fc_7adeaf0e-b7f6-41ea-b716-e262b94cd68b",
+                  "type": "function"
+                }
+              ]
+            }
+          }
+        ],
+        "created": 1788618359,
+        "id": "chatcmpl-f5570984-a562-419b-b7d6-22d4169c3285",
+        "mcp_list_tools": null,
+        "model": "openai/gpt-oss-120b",
+        "object": "chat.completion",
+        "service_tier": "on_demand",
+        "system_fingerprint": "fp_e5b4e54fbb",
+        "usage": {
+          "completion_time": 0.630378663,
+          "completion_tokens": 298,
+          "completion_tokens_details": {
+            "reasoning_tokens": 262
+          },
+          "prompt_time": 0.038468301,
+          "prompt_tokens": 3337,
+          "prompt_tokens_details": {
+            "cached_tokens": 2560
+          },
+          "queue_time": 0.394566809,
+          "total_time": 0.668846964,
+          "total_tokens": 3635
+        },
+        "usage_breakdown": null,
+        "x_groq": {
+          "debug": null,
+          "id": "req_01m1rzcfybe9qb05fspj75c9tx",
+          "seed": 2111069170,
+          "usage": null
+        }
+      }
+    },
+    {
+      "key": "25ff15d46df7443fecd77bdf9088b443d248cf8fd6651e36b21c4eb3c0000ed4",
+      "response": {
+        "choices": [
+          {
+            "finish_reason": "tool_calls",
+            "index": 0,
+            "logprobs": null,
+            "message": {
+              "annotations": null,
+              "content": null,
+              "executed_tools": null,
+              "function_call": null,
+              "reasoning": "We have a soft decline (gateway_timeout). It's a UPI, not e-mandate? Mandate category mutual_fund, but method is upi, maybe e-mandate? Since it's a mutual_fund mandate, likely an e-mandate, but not sure. The decline reason is gateway_timeout, soft.\n\nWe need to schedule retries within 14 days (336h). The best timing for insufficient funds is month boundary, but this is gateway_timeout, not insufficient_funds. So maybe we just schedule a retry soon after cooling window. The min_retry_wait_h is 1 hour. Could schedule at hour 1? But check policy allowed at 1? Let's test.\n\n",
+              "role": "assistant",
+              "tool_calls": [
+                {
+                  "function": {
+                    "arguments": "{\"action_type\":\"retry\",\"at_hour\":1,\"case_id\":\"case-00004\"}",
+                    "name": "check_policy"
+                  },
+                  "id": "fc_e215a012-c899-49d4-8ec8-36ea675d8be6",
+                  "type": "function"
+                }
+              ]
+            }
+          }
+        ],
+        "created": 1788618368,
+        "id": "chatcmpl-bddc0503-979a-46d4-8cec-4d364edb47cd",
+        "mcp_list_tools": null,
+        "model": "openai/gpt-oss-120b",
+        "object": "chat.completion",
+        "service_tier": "on_demand",
+        "system_fingerprint": "fp_8ea50c0161",
+        "usage": {
+          "completion_time": 0.370807804,
+          "completion_tokens": 175,
+          "completion_tokens_details": {
+            "reasoning_tokens": 142
+          },
+          "prompt_time": 0.849276907,
+          "prompt_tokens": 3716,
+          "prompt_tokens_details": {
+            "cached_tokens": 2560
+          },
+          "queue_time": 0.34109677,
+          "total_time": 1.220084711,
+          "total_tokens": 3891
+        },
+        "usage_breakdown": null,
+        "x_groq": {
+          "debug": null,
+          "id": "req_01m1rzcr0aeeysr5f1j92dqnbf",
+          "seed": 1888543976,
+          "usage": null
+        }
+      }
+    },
+    {
+      "key": "117952c9da451a2c7eb44e679a26a106c088c420b0deb664c365d42e340ec04e",
+      "response": {
+        "choices": [
+          {
+            "finish_reason": "tool_calls",
+            "index": 0,
+            "logprobs": null,
+            "message": {
+              "annotations": null,
+              "content": null,
+              "executed_tools": null,
+              "function_call": null,
+              "reasoning": "We need to decide plan. It's a soft decline (gateway_timeout). Amount 29900 paise = Rs 299. It's recurring, not first debit, mandate category mutual_fund (but UPI, maybe not e-mandate? But mandate category is mutual_fund, but payment method is UPI, maybe not an e-mandate, but likely a UPI mandate? Not sure. However RBIPreDebitNotice applies only to e-mandate debits. The case detail doesn't indicate e-mandate; it's a recurring UPI payment (maybe not e-mandate). The policy check didn't block retry. So we can schedule retries.\n\nWe have to consider timing: insufficient_funds not the reason, it's gateway_timeout (soft). The cooling window is min_retry_wait_h: 1. So earliest is hour 1. But better to aim for salary refill windows: 1st-3rd of month or 28 onward. Failure at 2026-08-20 23:00 IST (20th Aug). Within 14 days (window until Sep 3?). Let's compute: 14 days = 336 hours, so up to Sep 3 23:00. Salary refill windows: 28th onward of Aug (we are at 20th) so we could schedule at 28th Aug (8 days later). That's hour offset: from Aug 20 23:00 to Aug 28 00:00? 8 days = 192 hours; but need within window, yes. 28th onward (including 28). Could schedule at hour 192 (approx). Also the 1st-3rd of Sep is also within window: Sep 1 is 12 days later (~288 hours). So best to schedule at 192 (28th) for higher chance. Also we can schedule a second retry later if first fails, but diminishing returns. Since amount is modest Rs 299, cost of retry 300 paise = Rs 3, comparable to amount. Expected recovery is about maybe 30%? But policy says expected recovery > cost. So we can schedule one retry at hour 192.\n\nBut also we might consider sending a payment reminder? Contact cost low (email 1 paise). Could send email reminder earlier, maybe hour 2 (after failure) to nudge? But for soft declines, a silent retry works; contacting may improve but not needed. The cost is tiny, but we have contact frequency limit 3 per week, none sent yet. Could send an email reminder now (hour 2) to encourage them to ensure funds. But we must ensure QuietHours: not SMS/WhatsApp between 21:00-09:00. The failure time is 23:00 IST, which is QuietHours for SMS/WhatsApp but email is fine. So we could send email at hour 2 (which is 01:00 IST?) Actually hour 2 is 01:00 next day, still QuietHours but email allowed. That's okay.\n\nHowever policy may consider that contacting for a soft decline is allowed. The cost is negligible. Should we schedule both a reminder and a retry? Might be overkill; but cost is low.\n\nGoal is to recover money. A well-timed retry at salary refill window is most effective. So schedule retry at hour 192 (Aug 28). Also could schedule a second fallback retry later at hour 300 (Sep 2) in case first fails, but cost may exceed expected recovery. Might be okay but limited.\n\nLet's check expected recovery values from policy: At hour 192, attempt cap says expected recovery 13455p >= cost 300? Actually policy gave expected recovery 13455p for hour 179. So okay. At hour 300 maybe lower.\n\nWe can schedule one retry at hour 192.\n\nOptionally send email reminder at hour 2 to ask them to ensure funds. Use template \"payment_reminder\". Cost 1 paise. Ensure ContactFrequency rule (max 3 per week, none yet). Ok.\n\nLet's check policy for email at hour 2.",
+              "role": "assistant",
+              "tool_calls": [
+                {
+                  "function": {
+                    "arguments": "{\"action_type\":\"message\",\"at_hour\":2,\"case_id\":\"case-00004\",\"channel\":\"email\",\"template\":\"payment_reminder\"}",
+                    "name": "check_policy"
+                  },
+                  "id": "fc_74d35c37-c6f6-440d-8b96-a3836240c400",
+                  "type": "function"
+                }
+              ]
+            }
+          }
+        ],
+        "created": 1788618385,
+        "id": "chatcmpl-7947422d-0b5c-4950-b505-baf612798985",
+        "mcp_list_tools": null,
+        "model": "openai/gpt-oss-120b",
+        "object": "chat.completion",
+        "service_tier": "on_demand",
+        "system_fingerprint": "fp_4200b3f836",
+        "usage": {
+          "completion_time": 1.847394127,
+          "completion_tokens": 886,
+          "completion_tokens_details": {
+            "reasoning_tokens": 843
+          },
+          "prompt_time": 0.167207154,
+          "prompt_tokens": 4095,
+          "prompt_tokens_details": null,
+          "queue_time": 0.344039237,
+          "total_time": 2.014601281,
+          "total_tokens": 4981
+        },
+        "usage_breakdown": null,
+        "x_groq": {
+          "debug": null,
+          "id": "req_01m1rzd7cnery9jsxgdnhfjg8x",
+          "seed": 1423781646,
+          "usage": null
+        }
+      }
+    },
+    {
+      "key": "937c9bdbc413df810168eb3dfcfc15d01f7dae6a603400e873b5069239e99850",
+      "response": {
+        "choices": [
+          {
+            "finish_reason": "tool_calls",
+            "index": 0,
+            "logprobs": null,
+            "message": {
+              "annotations": null,
+              "content": null,
+              "executed_tools": null,
+              "function_call": null,
+              "reasoning": "We have a soft decline (gateway_timeout). It's UPI, not an e-mandate? Mandate category mutual_fund suggests it's an e-mandate maybe? But method is upi, and mandate_first_debit false, so it's a recurring UPI debit via e-mandate? In India, UPI mandates may be used for mutual fund SIP. The rules: RBIPreDebitNotice applies to e-mandate debits; we need to send a pre-debit notice at least 24h before the retry if it's an e-mandate debit. However, is the payment method UPI considered an e-mandate? Likely yes, as it's recurring and mandate category mutual_fund. The case detail includes \"mandate_category\": \"mutual_fund\". So it's an e-mandate. Therefore, to retry we need a pre_debit_notice sent >=24h before the debit. Also, the first debit under the mandate is false, so AFA not needed. So the plan should be: send a pre_debit_notice (template \"pre_debit_notice\") at some hour such that debit at hour >= at_hour+24. Then schedule retry at a well-timed hour based on insufficient_funds? The decline reason is gateway_timeout, a soft reason but not necessarily insufficient_funds. However we still treat as soft and can retry. The amount is 29900 paise = Rs 299. That's small. Expected recovery maybe around 80%? The check_policy gave expected recovery numbers for attempts. The first attempt at hour 1 gave expected recovery 8073p (Rs 80) vs cost 300p, marginal cost 811p? Actually cost is 300p. The verdict shows expected recovery 8073p >= marginal cost 811p, okay.\n\nWe should aim for a retry at a time when funds are likely available. Since amount is small and salary accounts refill at month boundaries (1-3 or 28 onward). The failure timestamp is 2026-08-20 23:00 IST (hour 0). Within 14 days, the next month boundary is September 1. That's about 11 days later (approx 11*24 = 264 hours). The window is 336 hours (14 days). So we can schedule a retry around hour 260-280 to land on Sep 1-3. That would be well-timed for insufficient_funds. Also could do an earlier retry for quick recovery. The cost vs expected recovery: first well-timed retry later might have higher success probability. We can schedule two retries: one early (hour 4 maybe) to capture immediate fix (gateway timeout maybe resolves), second at month start.\n\nNeed pre_debit_notice: send at hour maybe 240 (10 days) to give 24h notice for the month-start retry at hour 264. But we could also send notice at hour 236 to cover debit at hour 260. Must be at least 24h before debit.\n\nWe also can send a payment reminder email earlier, but not needed. Keep plan small: send pre-debit notice email at hour 236 (i.e., 236h after failure) announcing debit at hour 260. Then schedule retry at hour 260 (first attempt). Also maybe schedule a second retry at hour 280 if first fails.\n\nCheck policy for pre_debit_notice: need channel; email is allowed anytime. Let's test.\n\n",
+              "role": "assistant",
+              "tool_calls": [
+                {
+                  "function": {
+                    "arguments": "{\"action_type\":\"message\",\"at_hour\":236,\"case_id\":\"case-00004\",\"channel\":\"email\",\"debit_at_hour\":260,\"template\":\"pre_debit_notice\"}",
+                    "name": "check_policy"
+                  },
+                  "id": "fc_97a10cd4-39d6-4df1-9faa-16fed0bbfeeb",
+                  "type": "function"
+                }
+              ]
+            }
+          }
+        ],
+        "created": 1788618424,
+        "id": "chatcmpl-c6ce196c-7e2a-4e89-bc55-feacfc571262",
+        "mcp_list_tools": null,
+        "model": "openai/gpt-oss-120b",
+        "object": "chat.completion",
+        "service_tier": "on_demand",
+        "system_fingerprint": "fp_96d96a151c",
+        "usage": {
+          "completion_time": 1.595025717,
+          "completion_tokens": 759,
+          "completion_tokens_details": {
+            "reasoning_tokens": 708
+          },
+          "prompt_time": 0.176083701,
+          "prompt_tokens": 4455,
+          "prompt_tokens_details": null,
+          "queue_time": 0.303086887,
+          "total_time": 1.771109418,
+          "total_tokens": 5214
+        },
+        "usage_breakdown": null,
+        "x_groq": {
+          "debug": null,
+          "id": "req_01m1rzeec2efksr7rrg2z65m3p",
+          "seed": 1050110765,
+          "usage": null
+        }
+      }
+    },
+    {
+      "key": "26bcf1a9fa05b8634813bd8171e811fd7d1d5ce02cb7e2714e7a1b538b8a6e43",
+      "response": {
+        "choices": [
+          {
+            "finish_reason": "tool_calls",
+            "index": 0,
+            "logprobs": null,
+            "message": {
+              "annotations": null,
+              "content": null,
+              "executed_tools": null,
+              "function_call": null,
+              "reasoning": "We have a case: soft decline (gateway_timeout). Amount 29900 paise = Rs 299. Payment method: UPI (not e-mandate? It is a recurring UPI transaction under a mutual_fund mandate category. UPI recurring? Could be an e-mandate? The case details mention mandate category mutual_fund. However method is upi, not card. For e-mandates, they are often via UPI? In India, e-mandate can be via UPI or card. The rule RBIPreDebitNotice applies to e-mandate debit. If this is an e-mandate, we need to send pre-debit notice 24h before debit. But the case is a recurring payment that already attempted and failed due to gateway timeout. For UPI, I think there is no pre-debit notice requirement? Not sure. The rule RBIPreDebitNotice is scoped to e-mandate debits. The check_policy for a pre_debit_notice returned allowed, but with \"not a debit\" comment. So maybe not needed. The decline reason is soft, so we can retry. The amount is moderate Rs 299, expected recovery maybe around 3%? The check_policy gave expected recovery values: At hour 1 expected recovery 8073p (Rs 80.73) vs cost 300p => still okay? It says expected recovery 8073p >= marginal cost 811p? Actually they compute cost differently? But they allowed. So we can schedule a retry.\n\nTiming: For insufficient_funds we want end of month or start of month. But reason is gateway_timeout, not insufficient funds. So less about salary dates. We just want a retry after a short cooling off. min_retry_wait_h is 1 hour. Could schedule at hour 1 or 2. However earlier attempts might be good to capture quick fix. The cost is small relative to amount. Could also schedule a second retry later if first fails.\n\nWe should also consider sending a payment reminder email to encourage customer to ensure funds/UPI availability. Email cheap.\n\nWe have contact frequency limit: at most 3 per week, spaced at least a day. We have none yet. So we can send one email now (hour 2) as reminder. Also schedule a retry at hour 3 maybe? But need cooling window? min_retry_wait_h = 1, so okay. However the first retry at hour 1 maybe enough. Could schedule second retry later for fallback. But attempts cap expects diminishing returns. At hour 179 expected recovery 13455p > cost 300p, but still good. But we might not need that many.\n\nPlan: schedule retry at hour 2 (or 3) and send email reminder at hour 2? Both at same hour? Could schedule both at hour 2: but need idempotency keys distinct.\n\nBetter: send email reminder at hour 2, schedule retry at hour 3. Or retry first then email.\n\nLet's do: schedule retry at hour 2 (cost 300p). Then send email reminder at hour 3 (cost 1p). That seems fine.\n\nCheck policy for retry at hour 2.",
+              "role": "assistant",
+              "tool_calls": [
+                {
+                  "function": {
+                    "arguments": "{\"action_type\":\"retry\",\"at_hour\":2,\"case_id\":\"case-00004\"}",
+                    "name": "check_policy"
+                  },
+                  "id": "fc_fbdb2bc9-00ae-401b-b989-b720b7f8e62e",
+                  "type": "function"
+                }
+              ]
+            }
+          }
+        ],
+        "created": 1788618466,
+        "id": "chatcmpl-937cda6c-103e-43e3-aab6-95f558ed278f",
+        "mcp_list_tools": null,
+        "model": "openai/gpt-oss-120b",
+        "object": "chat.completion",
+        "service_tier": "on_demand",
+        "system_fingerprint": "fp_df9620fe21",
+        "usage": {
+          "completion_time": 1.473961859,
+          "completion_tokens": 693,
+          "completion_tokens_details": {
+            "reasoning_tokens": 660
+          },
+          "prompt_time": 0.245237172,
+          "prompt_tokens": 4827,
+          "prompt_tokens_details": null,
+          "queue_time": 0.312344236,
+          "total_time": 1.719199031,
+          "total_tokens": 5520
+        },
+        "usage_breakdown": null,
+        "x_groq": {
+          "debug": null,
+          "id": "req_01m1rzfppfeg68d2v6x93xa39j",
+          "seed": 1933008788,
+          "usage": null
+        }
+      }
+    },
+    {
+      "key": "48e3124f18310eee60bb95e439c1eb16ff8b2774b1157a867019eb5abe2cd49c",
+      "response": {
+        "choices": [
+          {
+            "finish_reason": "tool_calls",
+            "index": 0,
+            "logprobs": null,
+            "message": {
+              "annotations": null,
+              "content": null,
+              "executed_tools": null,
+              "function_call": null,
+              "reasoning": "We need to decide a plan. This is a soft decline (gateway_timeout) for UPI, amount 29900 paise (~Rs 299). It's recurring, not first debit, not e-mandate? Payment method UPI, mandate category mutual_fund. It's probably a recurring UPI auto-debit (UPI mandate). Not first debit, so AFA not required.\n\nWe need to schedule retries. For soft declines, we can retry. Best timing: For insufficient_funds, but this is gateway_timeout; maybe similar. We have no specific cooling window given, but min_retry_wait_h 1. We can schedule a first retry at a good time. Since it's a recurring payment on 20th Aug 23:00 IST, hour 0. We have 14 days (336h). Need to consider Indian salary accounts refill at month boundary: 1st-3rd or 28th onward succeed more. This is Aug 20th, within month; next month start is Sep 1. Within 14 days, we can schedule a retry around Sep 1-3. That is about 12 days later (288-312h). So schedule a retry at hour 292 (approx Sep 2). Also can schedule earlier maybe at hour 24 (next day) to capture possible fix. Since cost 300p each, amount 29900p, expected recovery maybe 10%? The policy's AttemptCap gave expected recovery values earlier: at hour 24 expected recovery 10652p. At hour 179 expected 13455p. At hour 1 expected 8073p. So best to schedule a retry at a later hour with higher expected recovery, like 179h (approx day 7.5). That's allowed. Could also schedule second retry later if first fails. But limited actions: maybe schedule first retry at hour 179 (approx day 7). Also perhaps send an email reminder before that? For soft declines, we could also send a payment_reminder email at hour 2 (cost negligible). The policy allows. Could do that to prompt user maybe.\n\nBut contact frequency: max three per week, at least a day apart. We have none yet, so one email is fine. Use email channel to avoid quiet hours.\n\nWe need to schedule actions with idempotency keys.\n\nPlan: \n- At hour 2: send email payment_reminder (idempotency key \"nudge-1\").\n- At hour 179: schedule retry (idempotency \"retry-1\").\n\nOptionally schedule another retry later if needed, but maybe limit to one retry due to diminishing returns.\n\nCheck policy for email at hour 2 already allowed.\n\nNow schedule actions.\n\n",
+              "role": "assistant",
+              "tool_calls": [
+                {
+                  "function": {
+                    "arguments": "{\"at_hour\":2,\"case_id\":\"case-00004\",\"channel\":\"email\",\"idempotency_key\":\"nudge-1\",\"template\":\"payment_reminder\"}",
+                    "name": "send_message"
+                  },
+                  "id": "fc_7d79e82f-4485-490c-ae54-6b6240c47e4a",
+                  "type": "function"
+                }
+              ]
+            }
+          }
+        ],
+        "created": 1788618510,
+        "id": "chatcmpl-1d989b55-fb26-4124-964c-d2f49c54d496",
+        "mcp_list_tools": null,
+        "model": "openai/gpt-oss-120b",
+        "object": "chat.completion",
+        "service_tier": "on_demand",
+        "system_fingerprint": "fp_854fa9be4c",
+        "usage": {
+          "completion_time": 1.470179872,
+          "completion_tokens": 623,
+          "completion_tokens_details": {
+            "reasoning_tokens": 556
+          },
+          "prompt_time": 0.139677274,
+          "prompt_tokens": 5206,
+          "prompt_tokens_details": {
+            "cached_tokens": 2560
+          },
+          "queue_time": 0.304617718,
+          "total_time": 1.609857146,
+          "total_tokens": 5829
+        },
+        "usage_breakdown": null,
+        "x_groq": {
+          "debug": null,
+          "id": "req_01m1rzh1wweyarxt4hgn8kbc3y",
+          "seed": 1148716491,
+          "usage": null
+        }
+      }
+    },
+    {
+      "key": "0ca0d1c57d73b4e37386448886f31c91178e358f60db5578c7853e1f4d175382",
+      "response": {
+        "choices": [
+          {
+            "finish_reason": "tool_calls",
+            "index": 0,
+            "logprobs": null,
+            "message": {
+              "annotations": null,
+              "content": null,
+              "executed_tools": null,
+              "function_call": null,
+              "reasoning": "We have a soft decline (gateway_timeout). The amount is 29900 paise (Rs 299). Method UPI. Recurring, not first debit, mandate category mutual_fund (but UPI maybe not e-mandate). The decline reason is gateway_timeout, which is a soft type. So we can schedule retries.\n\nWe need to schedule actions within 14 days (336 hours). Goal: maximize recovery with minimal cost.\n\nSoft decline: best to retry at a good timing. Since it's UPI, not necessarily salary refill pattern; but the guideline says for insufficient_funds, use salary date windows. For gateway_timeout, maybe not funds related; but still a transient.\n\nWe should schedule first retry maybe after a short cooling window (min_retry_wait_h 1). Already allowed at hour 1,2,24,179 etc. The expected recovery numbers in check_policy indicate expected recovery for each hour? At hour 24 expected recovery 10652p vs cost 300p; at hour 179 expected recovery 13455p vs cost 300p; at hour 2 expected 8185p.\n\nBetter to schedule retry later when probability higher? Since it's gateway_timeout maybe not dependent on time of day; but we could spread attempts: first retry at hour 2 (just after 1 hour). Then if fails again we could schedule second at later point like hour 24 or 48. But we have not yet attempted; we can schedule multiple retries now, as plan. The attempt cap rule ensures each attempt cost is less than expected recovery. For each attempt, we need to see expected recovery numbers. At hour 2 it's 8185p, at hour 24 is 10652p, at hour 179 is 13455p. Since cost is 300p each, all are fine. However we shouldn't schedule too many retries because cost accumulates and diminishing returns. Perhaps schedule two retries: one at hour 2 and another at hour 24 (or 48). Also we could send a payment reminder email at hour 2 (already did). Maybe we don't need both reminder and retry at same hour; but sending reminder may help. However cost of reminder is negligible 1p, good.\n\nWe must respect ContactFrequency: max 3 nudges per week, at least a day apart. We have only one nudge at hour 2. That's fine.\n\nWe could also consider sending a second nudge later if needed. But maybe not needed.\n\nThus plan: send email reminder at hour 2, schedule retry at hour 2? But sending both at same hour might be okay. But maybe better to schedule retry at hour 2, and email reminder at hour 2 as well (or earlier). Since both allowed, we can do both.\n\nWe already scheduled email reminder at hour 2.\n\nNow schedule retry at hour 2? Check policy allowed. Already did check: allowed true. So schedule retry at hour 2 with idempotency \"retry-1\". Then maybe schedule second retry at hour 24 with idempotency \"retry-2\". That would be within 14 days.\n\nLet's schedule those.\n\n",
+              "role": "assistant",
+              "tool_calls": [
+                {
+                  "function": {
+                    "arguments": "{\"at_hour\":2,\"case_id\":\"case-00004\",\"idempotency_key\":\"retry-1\"}",
+                    "name": "schedule_retry"
+                  },
+                  "id": "fc_32924769-4f41-48e7-8764-5dcb3488ed13",
+                  "type": "function"
+                }
+              ]
+            }
+          }
+        ],
+        "created": 1788618537,
+        "id": "chatcmpl-378d9a7c-2d71-4240-a34f-b634a6186834",
+        "mcp_list_tools": null,
+        "model": "openai/gpt-oss-120b",
+        "object": "chat.completion",
+        "service_tier": "on_demand",
+        "system_fingerprint": "fp_0adba2bb92",
+        "usage": {
+          "completion_time": 1.428446352,
+          "completion_tokens": 680,
+          "completion_tokens_details": {
+            "reasoning_tokens": 643
+          },
+          "prompt_time": 0.29063291,
+          "prompt_tokens": 5593,
+          "prompt_tokens_details": null,
+          "queue_time": 0.339271518,
+          "total_time": 1.7190792620000002,
+          "total_tokens": 6273
+        },
+        "usage_breakdown": null,
+        "x_groq": {
+          "debug": null,
+          "id": "req_01m1rzhwpwen9sdm7c0qdb29y4",
+          "seed": 507949537,
+          "usage": null
+        }
+      }
+    },
+    {
+      "key": "cb2e7d97a1d7d6413d0be43c3d942cabe775ceed3b9e0be6e7324890df76a197",
+      "response": {
+        "choices": [
+          {
+            "finish_reason": "tool_calls",
+            "index": 0,
+            "logprobs": null,
+            "message": {
+              "annotations": null,
+              "content": null,
+              "executed_tools": null,
+              "function_call": null,
+              "reasoning": "We have scheduled a payment reminder email at hour 2 and a retry at hour 2. However, sending a reminder at same time as retry may be okay. Could also consider timing for insufficient_funds: need to aim for month boundaries. Failure at 2026-08-20 23:00 IST. 1st-3rd of next month would be Sep 1-3. That's beyond 14 days? 14 days from Aug 20 is Sep 3. So we could schedule a retry at Sep 1 or 2. That is hour ~? Aug 20 23:00 to Sep 1 00:00 is about 11 days = 264 hours. So hour 264 is within 336. We could schedule a retry at hour 264 (or 260). We already scheduled a retry at hour 2 which may be low success probability. We might want a better plan: maybe a first retry soon to capture quick fix? For insufficient_funds, they may not have funds until salary. But maybe also a later retry at month start. We could schedule second retry later.\n\nGiven cost: amount 29900 paise (~\u20b9299). Expected recovery maybe 30%? Not sure. The system gave attempt cap expected recovery numbers: at hour 2 expected recovery 8185 paise (\u20b981.85) which is less than cost? Actually cost 300, expected recovery 8185 > cost so allowed. But later hour 24 expected recovery 10652p etc.\n\nWe have cost budget: spent so far 301p (1+300). Expected recovery from case maybe ~10054p? The check_policy earlier gave expected recovery values for attempts. Probably total expected recovery is around 10054p (~\u20b9100). Our spend is 301p, still fine.\n\nWe could add a second retry at hour 264 (targeting 1st of Sep). Let's check policy.\n\n",
+              "role": "assistant",
+              "tool_calls": [
+                {
+                  "function": {
+                    "arguments": "{\"action_type\":\"retry\",\"at_hour\":264,\"case_id\":\"case-00004\"}",
+                    "name": "check_policy"
+                  },
+                  "id": "fc_3ff953a0-7e9f-4d22-baff-3c1d0abc771f",
+                  "type": "function"
+                }
+              ]
+            }
+          }
+        ],
+        "created": 1788618587,
+        "id": "chatcmpl-7f28f28f-007a-46d8-bafa-733dc494d742",
+        "mcp_list_tools": null,
+        "model": "openai/gpt-oss-120b",
+        "object": "chat.completion",
+        "service_tier": "on_demand",
+        "system_fingerprint": "fp_c800245357",
+        "usage": {
+          "completion_time": 0.896030089,
+          "completion_tokens": 430,
+          "completion_tokens_details": {
+            "reasoning_tokens": 397
+          },
+          "prompt_time": 0.170172816,
+          "prompt_tokens": 5998,
+          "prompt_tokens_details": {
+            "cached_tokens": 2560
+          },
+          "queue_time": 0.306898784,
+          "total_time": 1.066202905,
+          "total_tokens": 6428
+        },
+        "usage_breakdown": null,
+        "x_groq": {
+          "debug": null,
+          "id": "req_01m1rzkdrye50rj1fz3hv0aag2",
+          "seed": 469546062,
+          "usage": null
+        }
+      }
+    },
+    {
+      "key": "09d0021ef214e8418249efe631da51babe8da0092e363fb913a3b3f24c1798f8",
+      "response": {
+        "choices": [
+          {
+            "finish_reason": "tool_calls",
+            "index": 0,
+            "logprobs": null,
+            "message": {
+              "annotations": null,
+              "content": null,
+              "executed_tools": null,
+              "function_call": null,
+              "reasoning": "We need to produce a plan. Currently we have scheduled a payment reminder email at hour 2 and a retry at hour 2. That's okay but maybe redundant: sending reminder and retry at same time may be okay. However we might consider better timing: Since soft decline, we want to retry at a time likely to succeed. Decline reason is gateway_timeout (soft). No special cooling? min_retry_wait_h = 1. So earliest retry could be hour 1. But we scheduled at hour 2 which is fine.\n\nBut also consider insufficient_funds? Not this reason. For gateway_timeout, any retry can succeed; maybe earlier is okay. But we also want to consider the 14-day window and expected recovery. The amount is 29900 paise = Rs 299. That's relatively small. Cost of retry is 300 paise = Rs 3. So we can afford maybe 1 or 2 retries. Budget ceiling says total spend <= expected recovery. Expected recovery maybe based on segment? Not given; the policy gave expected recovery numbers in check_policy results: at hour 2 expected recovery 8185p (i.e., Rs 81.85). That's above cost 300p, so okay.\n\nWe already spent 301p (retry+email). Could schedule a second retry later maybe at a better window (like hour 24 or 179). However expected recovery at hour 24 is 10652p, cost would be 600p total now 901p which still under expected 10k. Could schedule another retry at hour 24.\n\nBut we must also consider contact frequency: limit 3 nudges per week, we have 1 email. That's fine.\n\nWe need to ensure not exceeding contact budget: each email cost 1 paise, negligible.\n\nWe should maybe schedule a second retry at hour 24 to maximize chance. But we must ensure cooling window between retries: min_retry_wait_h 1, we have 2 hours apart (2 to 24) okay.\n\nLet's check policy for retry at hour 24 (already checked earlier, allowed). Let's schedule.\n\nAlso maybe a second email reminder before second retry, maybe at hour 22? But could be too many messages. We have limit 3 per week, we have only 1, can add another if needed. Might not be needed.\n\nThus final plan: email reminder at hour 2, retry at hour 2, second retry at hour 24. That seems reasonable.\n\nNow schedule second retry.\n\n",
+              "role": "assistant",
+              "tool_calls": [
+                {
+                  "function": {
+                    "arguments": "{\"at_hour\":24,\"case_id\":\"case-00004\",\"idempotency_key\":\"retry-2\"}",
+                    "name": "schedule_retry"
+                  },
+                  "id": "fc_2cf24137-2dc9-4233-80ad-154c690582b0",
+                  "type": "function"
+                }
+              ]
+            }
+          }
+        ],
+        "created": 1788618618,
+        "id": "chatcmpl-99e7fb6a-1cc4-47c2-8420-96e054481255",
+        "mcp_list_tools": null,
+        "model": "openai/gpt-oss-120b",
+        "object": "chat.completion",
+        "service_tier": "on_demand",
+        "system_fingerprint": "fp_854fa9be4c",
+        "usage": {
+          "completion_time": 1.334974104,
+          "completion_tokens": 548,
+          "completion_tokens_details": {
+            "reasoning_tokens": 511
+          },
+          "prompt_time": 0.14247813,
+          "prompt_tokens": 6377,
+          "prompt_tokens_details": {
+            "cached_tokens": 5120
+          },
+          "queue_time": 0.308171238,
+          "total_time": 1.477452234,
+          "total_tokens": 6925
+        },
+        "usage_breakdown": null,
+        "x_groq": {
+          "debug": null,
+          "id": "req_01m1rzmbmse44akrr9v7fn6s9k",
+          "seed": 884723260,
+          "usage": null
+        }
+      }
+    },
+    {
+      "key": "af2214c343e4722bfdc110d5a8c7378ceceddf2b51d7d76ce72782d5b5fed5c2",
+      "response": {
+        "choices": [
+          {
+            "finish_reason": "tool_calls",
+            "index": 0,
+            "logprobs": null,
+            "message": {
+              "annotations": null,
+              "content": null,
+              "executed_tools": null,
+              "function_call": null,
+              "reasoning": "We have a soft decline (gateway_timeout) for UPI, amount 29900 paise (~Rs.299). It's a recurring payment under a mutual_fund mandate, not first debit. Soft decline, we can retry. Need to schedule retries with timing to maximize recovery. Also we can send a payment reminder email. Already scheduled a reminder at hour 2 and a retry at hour 2. Might be redundant: sending reminder and retry at same time. Could be okay.\n\nWe have also scheduled a retry at hour 24. Also considered a later retry at hour 264 (but not scheduled). Need to keep cost within expected recovery. Expected recovery seems around 10054 paise? Actually budget ceiling says spend stays within expected recovery 10054p. Our spend: retry-1 cost 300, nudge-1 cost 1, retry-2 cost 300 => total 601 paise, still under 10054. Could add a third retry at later hour maybe around month end (if within 14 days). The failure is at 2026-08-20 23:00 IST. 14 days window ends at ~Sep 3 23:00. The month boundaries: 1st-3rd of month, and 28th onward. The failure is on Aug 20; within 14 days we can hit Aug 28-31 and Sep 1-3. Those windows are good for UPI insufficient funds? The reason is gateway_timeout, not insufficient_funds but still soft. Timing may not matter as much, but we can aim for 28th onward. The next best is hour 179 which is about 7.5 days later (approx Aug 28 10:30?). Actually hour 179 from Aug 20 23:00 is about Aug 27? Let's compute: 24h per day. 179h ~ 7 days 11 hours. So at Aug 28 ~ 10:00? Wait: Aug 20 23:00 + 7 days = Aug 27 23:00, plus 11h = Aug 28 10:00. So hour 179 lands around Aug 28 10:00, which is within the 28th onward window. That is likely good. So we could schedule a third retry at hour 179. That cost 300 paise; total spend would be 901 paise, still under 10054.\n\nGiven the attempt cap expected recovery values: at hour 179 expected recovery 13455p >= cost 685p, okay.\n\nThus plan: send email reminder at hour 2 (already done), retry at hour 2 (already done) maybe redundant but okay. Could also send reminder at hour 10 maybe but limited to 3 per week. Already used 1. Could schedule second reminder before later retry maybe hour 168 (7 days later) but not needed.\n\nWe should schedule third retry at hour 179.\n\nLet's do that.",
+              "role": "assistant",
+              "tool_calls": [
+                {
+                  "function": {
+                    "arguments": "{\"at_hour\":179,\"case_id\":\"case-00004\",\"idempotency_key\":\"retry-3\"}",
+                    "name": "schedule_retry"
+                  },
+                  "id": "fc_8ee4fe65-2b82-4478-8964-bfe3008bbcd1",
+                  "type": "function"
+                }
+              ]
+            }
+          }
+        ],
+        "created": 1788618636,
+        "id": "chatcmpl-63c4caa9-373a-4f80-aa90-9100ceef2aea",
+        "mcp_list_tools": null,
+        "model": "openai/gpt-oss-120b",
+        "object": "chat.completion",
+        "service_tier": "on_demand",
+        "system_fingerprint": "fp_c868cf1eaa",
+        "usage": {
+          "completion_time": 1.391789871,
+          "completion_tokens": 650,
+          "completion_tokens_details": {
+            "reasoning_tokens": 613
+          },
+          "prompt_time": 0.462475435,
+          "prompt_tokens": 6782,
+          "prompt_tokens_details": {
+            "cached_tokens": 2560
+          },
+          "queue_time": 0.388428864,
+          "total_time": 1.8542653059999998,
+          "total_tokens": 7432
+        },
+        "usage_breakdown": null,
+        "x_groq": {
+          "debug": null,
+          "id": "req_01m1rzmx72ebsvjkaexkn5seah",
+          "seed": 578819042,
+          "usage": null
+        }
+      }
+    }
+  ]
+}
